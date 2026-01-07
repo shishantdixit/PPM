@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16
+    container_name: ppm-postgres
+    environment:
+      POSTGRES_DB: PPM
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ppm-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # SQL Server (Alternative to PostgreSQL)
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: ppm-sqlserver
+    environment:
+      SA_PASSWORD: "YourStrong@Password123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - ppm-network
+    profiles:
+      - sqlserver
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Password123 -Q 'SELECT 1'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ppm-backend
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:5000;https://+:5001"
+      DatabaseProvider: "PostgreSQL"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=PPM;Username=postgres;Password=postgres"
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - ppm-network
+    volumes:
+      - ./backend/logs:/app/logs
+    profiles:
+      - backend
+
+  # Frontend (Next.js)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ppm-frontend
+    environment:
+      NEXT_PUBLIC_API_URL: "http://localhost:5000/api"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - ppm-network
+    profiles:
+      - frontend
+
+volumes:
+  postgres_data:
+  sqlserver_data:
+
+networks:
+  ppm-network:
+    driver: bridge
