@@ -3,15 +3,18 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
-import type { Shift, ShiftStatus } from '@/types';
+import type { Shift, ShiftStatus, FuelSale } from '@/types';
 import SalesList from '@/components/SalesList';
+import { generateShiftReportPdf } from '@/lib/shiftReportPdf';
 
 export default function ShiftDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const [shift, setShift] = useState<Shift | null>(null);
+  const [sales, setSales] = useState<FuelSale[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [exportingPdf, setExportingPdf] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -27,6 +30,11 @@ export default function ShiftDetailsPage() {
       const response = await api.getShift(id);
       if (response.success && response.data) {
         setShift(response.data);
+        // Also load sales for PDF export
+        const salesResponse = await api.getFuelSalesByShift(id);
+        if (salesResponse.success && salesResponse.data) {
+          setSales(salesResponse.data);
+        }
       } else {
         setError(response.message);
       }
@@ -34,6 +42,22 @@ export default function ShiftDetailsPage() {
       setError(err.response?.data?.message || 'Failed to load shift');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleExportPdf = async () => {
+    if (!shift) return;
+    try {
+      setExportingPdf(true);
+      generateShiftReportPdf({
+        shift,
+        sales,
+      });
+    } catch (err) {
+      console.error('Failed to generate PDF:', err);
+      alert('Failed to generate PDF report');
+    } finally {
+      setExportingPdf(false);
     }
   };
 
@@ -84,14 +108,32 @@ export default function ShiftDetailsPage() {
         >
           ← Back to All Shifts
         </button>
-        {shift.status === 1 && (
+        <div className="flex gap-3">
           <button
-            onClick={() => router.push('/dashboard/shifts/all')}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            onClick={handleExportPdf}
+            disabled={exportingPdf}
+            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 flex items-center gap-2"
           >
-            Close Shift
+            {exportingPdf ? (
+              <>
+                <span className="animate-spin">⏳</span>
+                Generating...
+              </>
+            ) : (
+              <>
+                📄 Export PDF
+              </>
+            )}
           </button>
-        )}
+          {shift.status === 1 && (
+            <button
+              onClick={() => router.push('/dashboard/shifts/all')}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            >
+              Close Shift
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow p-6 space-y-6">

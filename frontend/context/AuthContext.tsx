@@ -22,11 +22,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Check if user is logged in on mount
-    const storedUser = api.getUser();
-    const token = api.getToken();
+    try {
+      const storedUser = api.getStoredUser();
+      const token = api.getToken();
 
-    if (storedUser && token) {
-      setUser(storedUser);
+      if (storedUser && token) {
+        setUser(storedUser);
+      }
+    } catch (err) {
+      // Clear corrupted data
+      console.error('Error loading auth state:', err);
+      api.clearToken();
     }
     setLoading(false);
   }, []);

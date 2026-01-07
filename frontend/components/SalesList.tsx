@@ -2,17 +2,27 @@
 
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
 import type { FuelSale, PaymentMethod } from '@/types';
 
 interface SalesListProps {
   shiftId: string;
   refreshTrigger?: number;
+  shiftStatus?: number; // 0: Pending, 1: Active, 2: Closed
 }
 
-export default function SalesList({ shiftId, refreshTrigger }: SalesListProps) {
+export default function SalesList({ shiftId, refreshTrigger, shiftStatus }: SalesListProps) {
+  const { user } = useAuth();
   const [sales, setSales] = useState<FuelSale[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [voidingId, setVoidingId] = useState<string | null>(null);
+  const [showVoidModal, setShowVoidModal] = useState(false);
+  const [saleToVoid, setSaleToVoid] = useState<FuelSale | null>(null);
+  const [voidReason, setVoidReason] = useState('');
+
+  const canVoid = user?.role === 'Manager' || user?.role === 'Owner';
+  const isShiftClosed = shiftStatus === 2;
 
   useEffect(() => {
     loadSales();
@@ -33,6 +43,36 @@ export default function SalesList({ shiftId, refreshTrigger }: SalesListProps) {
     }
   };
 
+  const handleVoidClick = (sale: FuelSale) => {
+    setSaleToVoid(sale);
+    setVoidReason('');
+    setShowVoidModal(true);
+  };
+
+  const handleVoidSubmit = async () => {
+    if (!saleToVoid || !voidReason.trim()) return;
+
+    try {
+      setVoidingId(saleToVoid.fuelSaleId);
+      const response = await api.voidFuelSale(saleToVoid.fuelSaleId, voidReason.trim());
+      if (response.success) {
+        // Update the sale in the list
+        setSales(sales.map(s =>
+          s.fuelSaleId === saleToVoid.fuelSaleId ? { ...s, isVoided: true, voidReason: voidReason.trim() } : s
+        ));
+        setShowVoidModal(false);
+        setSaleToVoid(null);
+        setVoidReason('');
+      } else {
+        setError(response.message);
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to void sale');
+    } finally {
+      setVoidingId(null);
+    }
+  };
+
   const getPaymentMethodLabel = (method: PaymentMethod): string => {
     const labels = ['Cash', 'Credit', 'Digital', 'Mixed'];
     return labels[method];
@@ -48,8 +88,11 @@ export default function SalesList({ shiftId, refreshTrigger }: SalesListProps) {
     return colors[method];
   };
 
-  // Calculate summary
-  const summary = sales.reduce(
+  // Calculate summary (excluding voided sales)
+  const activeSales = sales.filter(s => !s.isVoided);
+  const voidedSales = sales.filter(s => s.isVoided);
+
+  const summary = activeSales.reduce(
     (acc, sale) => {
       acc.totalQuantity += sale.quantity;
       acc.totalAmount += sale.amount;
@@ -94,8 +137,11 @@ export default function SalesList({ shiftId, refreshTrigger }: SalesListProps) {
       {/* Summary Cards */}
       <div className="grid grid-cols-4 gap-4">
         <div className="bg-blue-50 p-4 rounded-lg">
-          <p className="text-sm text-gray-600">Total Sales</p>
-          <p className="text-2xl font-bold text-blue-600">{sales.length}</p>
+          <p className="text-sm text-gray-600">Active Sales</p>
+          <p className="text-2xl font-bold text-blue-600">{activeSales.length}</p>
+          {voidedSales.length > 0 && (
+            <p className="text-xs text-red-500">{voidedSales.length} voided</p>
+          )}
         </div>
         <div className="bg-green-50 p-4 rounded-lg">
           <p className="text-sm text-gray-600">Total Quantity</p>
@@ -137,6 +183,9 @@ export default function SalesList({ shiftId, refreshTrigger }: SalesListProps) {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    Bill No.
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                     Time
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
@@ -158,35 +207,78 @@ export default function SalesList({ shiftId, refreshTrigger }: SalesListProps) {
                     Payment
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Customer
+                    Status
                   </th>
+                  {canVoid && !isShiftClosed && (
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      Actions
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {sales.map((sale) => (
-                  <tr key={sale.fuelSaleId} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm text-gray-500">
+                  <tr
+                    key={sale.fuelSaleId}
+                    className={`hover:bg-gray-50 ${sale.isVoided ? 'bg-red-50 opacity-60' : ''}`}
+                  >
+                    <td className={`px-4 py-3 text-sm font-mono ${sale.isVoided ? 'line-through text-gray-400' : 'text-blue-600'}`}>
+                      {sale.saleNumber}
+                    </td>
+                    <td className={`px-4 py-3 text-sm ${sale.isVoided ? 'line-through text-gray-400' : 'text-gray-500'}`}>
                       {new Date(sale.saleTime).toLocaleTimeString()}
                     </td>
-                    <td className="px-4 py-3 text-sm font-medium">{sale.nozzleNumber}</td>
-                    <td className="px-4 py-3 text-sm">{sale.fuelName}</td>
-                    <td className="px-4 py-3 text-sm text-right">{sale.quantity.toFixed(2)}</td>
-                    <td className="px-4 py-3 text-sm text-right">₹{sale.rate.toFixed(2)}</td>
-                    <td className="px-4 py-3 text-sm text-right font-bold">
+                    <td className={`px-4 py-3 text-sm ${sale.isVoided ? 'line-through text-gray-400' : 'font-medium'}`}>
+                      {sale.nozzleNumber}
+                    </td>
+                    <td className={`px-4 py-3 text-sm ${sale.isVoided ? 'line-through text-gray-400' : ''}`}>
+                      {sale.fuelName}
+                    </td>
+                    <td className={`px-4 py-3 text-sm text-right ${sale.isVoided ? 'line-through text-gray-400' : ''}`}>
+                      {sale.quantity.toFixed(2)}
+                    </td>
+                    <td className={`px-4 py-3 text-sm text-right ${sale.isVoided ? 'line-through text-gray-400' : ''}`}>
+                      ₹{sale.rate.toFixed(2)}
+                    </td>
+                    <td className={`px-4 py-3 text-sm text-right ${sale.isVoided ? 'line-through text-gray-400' : 'font-bold'}`}>
                       ₹{sale.amount.toFixed(2)}
                     </td>
                     <td className="px-4 py-3 text-sm">
                       <span
-                        className={`px-2 py-1 rounded text-xs font-medium ${getPaymentMethodBadge(
-                          sale.paymentMethod
-                        )}`}
+                        className={`px-2 py-1 rounded text-xs font-medium ${
+                          sale.isVoided ? 'bg-gray-100 text-gray-500' : getPaymentMethodBadge(sale.paymentMethod)
+                        }`}
                       >
                         {getPaymentMethodLabel(sale.paymentMethod)}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      {sale.customerName || sale.vehicleNumber || '-'}
+                      {sale.isVoided ? (
+                        <span
+                          className="px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800 cursor-help"
+                          title={`Voided: ${sale.voidReason || 'No reason'}`}
+                        >
+                          VOIDED
+                        </span>
+                      ) : (
+                        <span className="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+                          Active
+                        </span>
+                      )}
                     </td>
+                    {canVoid && !isShiftClosed && (
+                      <td className="px-4 py-3 text-sm text-right">
+                        {!sale.isVoided && (
+                          <button
+                            onClick={() => handleVoidClick(sale)}
+                            disabled={voidingId === sale.fuelSaleId}
+                            className="text-red-600 hover:text-red-800 text-xs font-medium disabled:opacity-50"
+                          >
+                            {voidingId === sale.fuelSaleId ? 'Voiding...' : 'Void'}
+                          </button>
+                        )}
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -194,6 +286,50 @@ export default function SalesList({ shiftId, refreshTrigger }: SalesListProps) {
           </div>
         )}
       </div>
+
+      {/* Void Modal */}
+      {showVoidModal && saleToVoid && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4">Void Sale</h3>
+            <div className="mb-4 p-3 bg-gray-50 rounded">
+              <p className="text-sm text-gray-600">Sale: <span className="font-mono">{saleToVoid.saleNumber}</span></p>
+              <p className="text-sm text-gray-600">Amount: <span className="font-bold">₹{saleToVoid.amount.toFixed(2)}</span></p>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Reason for voiding *
+              </label>
+              <textarea
+                value={voidReason}
+                onChange={(e) => setVoidReason(e.target.value)}
+                className="w-full border rounded-lg p-2 text-sm"
+                rows={3}
+                placeholder="Enter reason for voiding this sale..."
+              />
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowVoidModal(false);
+                  setSaleToVoid(null);
+                  setVoidReason('');
+                }}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleVoidSubmit}
+                disabled={!voidReason.trim() || voidingId !== null}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+              >
+                {voidingId ? 'Voiding...' : 'Void Sale'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

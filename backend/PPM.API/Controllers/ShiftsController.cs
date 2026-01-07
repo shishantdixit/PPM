@@ -58,6 +58,77 @@ public class ShiftsController : ControllerBase
     }
 
     /// <summary>
+    /// Get all machines for shift assignment
+    /// </summary>
+    [HttpGet("machines")]
+    public async Task<IActionResult> GetMachines()
+    {
+        try
+        {
+            var tenantId = HttpContext.GetTenantId();
+            if (!tenantId.HasValue)
+                return BadRequest(ApiResponse<object>.ErrorResponse("Tenant context not found"));
+
+            var machines = await _dbContext.Machines
+                .Where(m => m.TenantId == tenantId.Value && m.IsActive)
+                .Select(m => new
+                {
+                    m.MachineId,
+                    m.MachineName,
+                    m.MachineCode,
+                    m.Location,
+                    NozzleCount = m.Nozzles.Count(n => n.IsActive)
+                })
+                .OrderBy(m => m.MachineName)
+                .ToListAsync();
+
+            return Ok(ApiResponse<object>.SuccessResponse(machines));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching machines");
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("Failed to fetch machines"));
+        }
+    }
+
+    /// <summary>
+    /// Get nozzles for a specific machine (for shift creation)
+    /// </summary>
+    [HttpGet("machines/{machineId}/nozzles")]
+    public async Task<IActionResult> GetMachineNozzles(Guid machineId)
+    {
+        try
+        {
+            var tenantId = HttpContext.GetTenantId();
+            if (!tenantId.HasValue)
+                return BadRequest(ApiResponse<object>.ErrorResponse("Tenant context not found"));
+
+            var nozzles = await _dbContext.Nozzles
+                .Where(n => n.TenantId == tenantId.Value && n.MachineId == machineId && n.IsActive)
+                .Include(n => n.FuelType)
+                .Select(n => new
+                {
+                    n.NozzleId,
+                    n.NozzleNumber,
+                    n.NozzleName,
+                    n.CurrentMeterReading,
+                    FuelTypeId = n.FuelTypeId,
+                    FuelName = n.FuelType!.FuelName,
+                    FuelCode = n.FuelType.FuelCode
+                })
+                .OrderBy(n => n.NozzleNumber)
+                .ToListAsync();
+
+            return Ok(ApiResponse<object>.SuccessResponse(nozzles));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching machine nozzles");
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("Failed to fetch nozzles"));
+        }
+    }
+
+    /// <summary>
     /// Get all shifts for the current tenant (with optional filters)
     /// </summary>
     [HttpGet]
@@ -99,6 +170,7 @@ public class ShiftsController : ControllerBase
 
             var shifts = await query
                 .Include(s => s.Worker)
+                .Include(s => s.Machine)
                 .OrderByDescending(s => s.ShiftDate)
                 .ThenByDescending(s => s.StartTime)
                 .Select(s => new ShiftDto
@@ -107,6 +179,8 @@ public class ShiftsController : ControllerBase
                     TenantId = s.TenantId,
                     WorkerId = s.WorkerId,
                     WorkerName = s.Worker!.FullName,
+                    MachineId = s.MachineId,
+                    MachineName = s.Machine!.MachineName,
                     ShiftDate = s.ShiftDate,
                     StartTime = s.StartTime,
                     EndTime = s.EndTime,
@@ -147,6 +221,7 @@ public class ShiftsController : ControllerBase
             var shift = await _dbContext.Shifts
                 .Where(s => s.ShiftId == id && (isSuperAdmin || s.TenantId == tenantId))
                 .Include(s => s.Worker)
+                .Include(s => s.Machine)
                 .Include(s => s.NozzleReadings)
                     .ThenInclude(nr => nr.Nozzle)
                         .ThenInclude(n => n!.Machine)
@@ -164,6 +239,8 @@ public class ShiftsController : ControllerBase
                 TenantId = shift.TenantId,
                 WorkerId = shift.WorkerId,
                 WorkerName = shift.Worker!.FullName,
+                MachineId = shift.MachineId,
+                MachineName = shift.Machine!.MachineName,
                 ShiftDate = shift.ShiftDate,
                 StartTime = shift.StartTime,
                 EndTime = shift.EndTime,
@@ -221,6 +298,7 @@ public class ShiftsController : ControllerBase
             var activeShift = await _dbContext.Shifts
                 .Where(s => s.TenantId == tenantId.Value && s.WorkerId == userId && s.Status == ShiftStatus.Active)
                 .Include(s => s.Worker)
+                .Include(s => s.Machine)
                 .Include(s => s.NozzleReadings)
                     .ThenInclude(nr => nr.Nozzle)
                         .ThenInclude(n => n!.Machine)
@@ -238,6 +316,8 @@ public class ShiftsController : ControllerBase
                 TenantId = activeShift.TenantId,
                 WorkerId = activeShift.WorkerId,
                 WorkerName = activeShift.Worker!.FullName,
+                MachineId = activeShift.MachineId,
+                MachineName = activeShift.Machine!.MachineName,
                 ShiftDate = activeShift.ShiftDate,
                 StartTime = activeShift.StartTime,
                 EndTime = activeShift.EndTime,
@@ -313,8 +393,49 @@ public class ShiftsController : ControllerBase
                 return BadRequest(ApiResponse<ShiftDto>.ErrorResponse($"{workerName ?? "This worker"} already has an active shift. Please close it first."));
             }
 
+            // Validate machine exists and belongs to tenant
+            var machine = await _dbContext.Machines
+                .FirstOrDefaultAsync(m => m.MachineId == dto.MachineId && m.TenantId == tenantId.Value && m.IsActive);
+
+            if (machine == null)
+                return BadRequest(ApiResponse<ShiftDto>.ErrorResponse("Machine not found or is inactive"));
+
+            // If no nozzles specified, get all active nozzles for the machine
+            List<NozzleReadingInput> openingReadings;
+            if (dto.OpeningReadings == null || !dto.OpeningReadings.Any())
+            {
+                // Auto-populate with all nozzles on the machine
+                var machineNozzles = await _dbContext.Nozzles
+                    .Where(n => n.TenantId == tenantId.Value && n.MachineId == dto.MachineId && n.IsActive)
+                    .ToListAsync();
+
+                if (!machineNozzles.Any())
+                    return BadRequest(ApiResponse<ShiftDto>.ErrorResponse("No active nozzles found for the selected machine"));
+
+                openingReadings = machineNozzles.Select(n => new NozzleReadingInput
+                {
+                    NozzleId = n.NozzleId,
+                    Reading = n.CurrentMeterReading
+                }).ToList();
+            }
+            else
+            {
+                // Validate that specified nozzles belong to the selected machine
+                var specifiedNozzleIds = dto.OpeningReadings.Select(r => r.NozzleId).ToList();
+                var validNozzles = await _dbContext.Nozzles
+                    .Where(n => n.TenantId == tenantId.Value && n.MachineId == dto.MachineId && specifiedNozzleIds.Contains(n.NozzleId) && n.IsActive)
+                    .Select(n => n.NozzleId)
+                    .ToListAsync();
+
+                var invalidNozzles = specifiedNozzleIds.Except(validNozzles).ToList();
+                if (invalidNozzles.Any())
+                    return BadRequest(ApiResponse<ShiftDto>.ErrorResponse("Some specified nozzles don't belong to the selected machine or are inactive"));
+
+                openingReadings = dto.OpeningReadings;
+            }
+
             // Check if any nozzles are already being used in other active shifts
-            var nozzleIds = dto.OpeningReadings.Select(r => r.NozzleId).ToList();
+            var nozzleIds = openingReadings.Select(r => r.NozzleId).ToList();
             var nozzlesInUse = await _dbContext.ShiftNozzleReadings
                 .Where(snr => snr.TenantId == tenantId.Value
                     && nozzleIds.Contains(snr.NozzleId)
@@ -345,6 +466,7 @@ public class ShiftsController : ControllerBase
                     ShiftId = Guid.NewGuid(),
                     TenantId = tenantId.Value,
                     WorkerId = targetWorkerId,
+                    MachineId = dto.MachineId,
                     ShiftDate = dto.ShiftDate,
                     StartTime = dto.StartTime,
                     Status = ShiftStatus.Active
@@ -353,7 +475,7 @@ public class ShiftsController : ControllerBase
                 _dbContext.Shifts.Add(shift);
 
                 // Add nozzle readings with current fuel rates
-                foreach (var reading in dto.OpeningReadings)
+                foreach (var reading in openingReadings)
                 {
                     // Get nozzle with fuel type
                     var nozzle = await _dbContext.Nozzles
@@ -401,6 +523,7 @@ public class ShiftsController : ControllerBase
                 var result = await _dbContext.Shifts
                     .Where(s => s.ShiftId == shift.ShiftId)
                     .Include(s => s.Worker)
+                    .Include(s => s.Machine)
                     .Include(s => s.NozzleReadings)
                         .ThenInclude(nr => nr.Nozzle)
                             .ThenInclude(n => n!.Machine)
@@ -413,6 +536,8 @@ public class ShiftsController : ControllerBase
                         TenantId = s.TenantId,
                         WorkerId = s.WorkerId,
                         WorkerName = s.Worker!.FullName,
+                        MachineId = s.MachineId,
+                        MachineName = s.Machine!.MachineName,
                         ShiftDate = s.ShiftDate,
                         StartTime = s.StartTime,
                         EndTime = s.EndTime,
@@ -563,6 +688,7 @@ public class ShiftsController : ControllerBase
                 var result = await _dbContext.Shifts
                     .Where(s => s.ShiftId == id)
                     .Include(s => s.Worker)
+                    .Include(s => s.Machine)
                     .Include(s => s.NozzleReadings)
                         .ThenInclude(nr => nr.Nozzle)
                             .ThenInclude(n => n!.Machine)
@@ -578,6 +704,8 @@ public class ShiftsController : ControllerBase
                         TenantId = s.TenantId,
                         WorkerId = s.WorkerId,
                         WorkerName = s.Worker!.FullName,
+                        MachineId = s.MachineId,
+                        MachineName = s.Machine!.MachineName,
                         ShiftDate = s.ShiftDate,
                         StartTime = s.StartTime,
                         EndTime = s.EndTime,
@@ -612,6 +740,7 @@ public class ShiftsController : ControllerBase
                             FuelSaleId = fs.FuelSaleId,
                             ShiftId = fs.ShiftId,
                             NozzleId = fs.NozzleId,
+                            SaleNumber = fs.SaleNumber,
                             NozzleNumber = fs.Nozzle!.NozzleNumber,
                             FuelName = fs.Nozzle.FuelType!.FuelName,
                             Quantity = fs.Quantity,
@@ -622,7 +751,11 @@ public class ShiftsController : ControllerBase
                             CustomerPhone = fs.CustomerPhone,
                             VehicleNumber = fs.VehicleNumber,
                             SaleTime = fs.SaleTime,
-                            Notes = fs.Notes
+                            Notes = fs.Notes,
+                            IsVoided = fs.IsVoided,
+                            VoidedAt = fs.VoidedAt,
+                            VoidedBy = fs.VoidedBy,
+                            VoidReason = fs.VoidReason
                         }).ToList()
                     })
                     .FirstAsync();

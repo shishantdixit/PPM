@@ -44,6 +44,9 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSet
 // Register application services
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<PPM.API.Services.IExportService, PPM.API.Services.ExportService>();
+builder.Services.AddScoped<IFeatureService, FeatureService>();
+builder.Services.AddScoped<ITankService, TankService>();
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
@@ -164,3 +167,9 @@ using (var scope = app.Services.CreateScope())
 Log.Information("Starting PPM API...");
 
 app.Run();
+
+// Make Program class accessible for integration tests
+namespace PPM.API
+{
+    public partial class Program { }
+}

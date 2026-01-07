@@ -22,6 +22,380 @@ namespace PPM.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("PPM.Core.Entities.CreditCustomer", b =>
+                {
+                    b.Property<Guid>("CreditCustomerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("BlockReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("ContactPerson")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("CreditLimit")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal>("CurrentBalance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<string>("CustomerCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsBlocked")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<int>("PaymentTermDays")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(30);
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("VehicleNumbers")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.HasKey("CreditCustomerId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TenantId", "CustomerCode")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId", "IsActive");
+
+                    b.HasIndex("TenantId", "IsBlocked");
+
+                    b.HasIndex("TenantId", "Phone");
+
+                    b.ToTable("CreditCustomers");
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.CreditTransaction", b =>
+                {
+                    b.Property<Guid>("CreditTransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal>("BalanceAfter")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid>("CreditCustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("FuelSaleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int?>("PaymentMode")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PaymentReference")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("CreditTransactionId");
+
+                    b.HasIndex("CreditCustomerId");
+
+                    b.HasIndex("FuelSaleId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TransactionDate");
+
+                    b.HasIndex("TransactionType");
+
+                    b.ToTable("CreditTransactions");
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.Expense", b =>
+                {
+                    b.Property<Guid>("ExpenseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<int>("Category")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateOnly>("ExpenseDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<int>("PaymentMode")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("RecordedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Reference")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Vendor")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("ExpenseId");
+
+                    b.HasIndex("Category");
+
+                    b.HasIndex("ExpenseDate");
+
+                    b.HasIndex("RecordedById");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TenantId", "Category");
+
+                    b.HasIndex("TenantId", "ExpenseDate");
+
+                    b.ToTable("Expenses");
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.Feature", b =>
+                {
+                    b.Property<Guid>("FeatureId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FeatureCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("FeatureName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Icon")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Module")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("FeatureId");
+
+                    b.HasIndex("FeatureCode")
+                        .IsUnique();
+
+                    b.ToTable("Features");
+
+                    b.HasData(
+                        new
+                        {
+                            FeatureId = new Guid("f0000001-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9870),
+                            Description = "Access to sales reports, dashboards, and analytics",
+                            DisplayOrder = 1,
+                            FeatureCode = "REPORTS",
+                            FeatureName = "Reports & Analytics",
+                            Icon = "chart-bar",
+                            IsActive = true,
+                            Module = "Analytics",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9873)
+                        },
+                        new
+                        {
+                            FeatureId = new Guid("f0000002-0000-0000-0000-000000000002"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9886),
+                            Description = "Manage credit customers and their balances",
+                            DisplayOrder = 2,
+                            FeatureCode = "CREDIT_CUSTOMERS",
+                            FeatureName = "Credit Customer Management",
+                            Icon = "credit-card",
+                            IsActive = true,
+                            Module = "Sales",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9888)
+                        },
+                        new
+                        {
+                            FeatureId = new Guid("f0000003-0000-0000-0000-000000000003"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9894),
+                            Description = "Track and manage business expenses",
+                            DisplayOrder = 3,
+                            FeatureCode = "EXPENSES",
+                            FeatureName = "Expense Tracking",
+                            Icon = "receipt",
+                            IsActive = true,
+                            Module = "Finance",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9895)
+                        },
+                        new
+                        {
+                            FeatureId = new Guid("f0000004-0000-0000-0000-000000000004"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9900),
+                            Description = "Support for multiple shifts per day",
+                            DisplayOrder = 4,
+                            FeatureCode = "MULTI_SHIFT",
+                            FeatureName = "Multiple Shifts",
+                            Icon = "clock",
+                            IsActive = true,
+                            Module = "Operations",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9951)
+                        },
+                        new
+                        {
+                            FeatureId = new Guid("f0000005-0000-0000-0000-000000000005"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9957),
+                            Description = "Export data to Excel and PDF",
+                            DisplayOrder = 5,
+                            FeatureCode = "EXPORT",
+                            FeatureName = "Data Export",
+                            Icon = "download",
+                            IsActive = true,
+                            Module = "Utilities",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9958)
+                        },
+                        new
+                        {
+                            FeatureId = new Guid("f0000006-0000-0000-0000-000000000006"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9963),
+                            Description = "Programmatic API access for integrations",
+                            DisplayOrder = 6,
+                            FeatureCode = "API_ACCESS",
+                            FeatureName = "API Access",
+                            Icon = "code",
+                            IsActive = true,
+                            Module = "Integration",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9964)
+                        },
+                        new
+                        {
+                            FeatureId = new Guid("f0000007-0000-0000-0000-000000000007"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9971),
+                            Description = "Advanced analytics and custom reports",
+                            DisplayOrder = 7,
+                            FeatureCode = "ADVANCED_REPORTS",
+                            FeatureName = "Advanced Reports",
+                            Icon = "chart-pie",
+                            IsActive = true,
+                            Module = "Analytics",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9972)
+                        },
+                        new
+                        {
+                            FeatureId = new Guid("f0000008-0000-0000-0000-000000000008"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9977),
+                            Description = "Bulk import/export and batch operations",
+                            DisplayOrder = 8,
+                            FeatureCode = "BULK_OPERATIONS",
+                            FeatureName = "Bulk Operations",
+                            Icon = "database",
+                            IsActive = true,
+                            Module = "Utilities",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9978)
+                        });
+                });
+
             modelBuilder.Entity("PPM.Core.Entities.FuelRate", b =>
                 {
                     b.Property<Guid>("FuelRateId")
@@ -68,34 +442,34 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             FuelRateId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9108),
-                            EffectiveFrom = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(8313),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2128),
+                            EffectiveFrom = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(9851),
                             FuelTypeId = new Guid("77777777-7777-7777-7777-777777777777"),
                             Rate = 102.50m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9109),
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2131),
                             UpdatedBy = new Guid("33333333-3333-3333-3333-333333333333")
                         },
                         new
                         {
                             FuelRateId = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9117),
-                            EffectiveFrom = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9115),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2157),
+                            EffectiveFrom = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2154),
                             FuelTypeId = new Guid("88888888-8888-8888-8888-888888888888"),
                             Rate = 89.75m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9117),
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2158),
                             UpdatedBy = new Guid("33333333-3333-3333-3333-333333333333")
                         },
                         new
                         {
                             FuelRateId = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9121),
-                            EffectiveFrom = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9120),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2163),
+                            EffectiveFrom = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2162),
                             FuelTypeId = new Guid("99999999-9999-9999-9999-999999999999"),
                             Rate = 75.00m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9122),
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2163),
                             UpdatedBy = new Guid("33333333-3333-3333-3333-333333333333")
                         });
                 });
@@ -121,6 +495,9 @@ namespace PPM.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<bool>("IsVoided")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Notes")
                         .HasColumnType("text");
 
@@ -138,6 +515,10 @@ namespace PPM.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
+                    b.Property<string>("SaleNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("SaleTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -153,6 +534,15 @@ namespace PPM.Infrastructure.Migrations
                     b.Property<string>("VehicleNumber")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<string>("VoidReason")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("VoidedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("VoidedBy")
+                        .HasColumnType("text");
 
                     b.HasKey("FuelSaleId");
 
@@ -217,35 +607,35 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             FuelTypeId = new Guid("77777777-7777-7777-7777-777777777777"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(6771),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(4558),
                             FuelCode = "PTR",
                             FuelName = "Petrol",
                             IsActive = true,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Unit = "Liters",
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(6772)
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(4563)
                         },
                         new
                         {
                             FuelTypeId = new Guid("88888888-8888-8888-8888-888888888888"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(6778),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(4676),
                             FuelCode = "DSL",
                             FuelName = "Diesel",
                             IsActive = true,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Unit = "Liters",
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(6778)
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(4677)
                         },
                         new
                         {
                             FuelTypeId = new Guid("99999999-9999-9999-9999-999999999999"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(6781),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(4935),
                             FuelCode = "CNG",
                             FuelName = "CNG",
                             IsActive = true,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Unit = "Kg",
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(6782)
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(4936)
                         });
                 });
 
@@ -311,7 +701,7 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             MachineId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(1573),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(9779),
                             InstallationDate = new DateOnly(2023, 1, 15),
                             IsActive = true,
                             Location = "Left Side",
@@ -321,12 +711,12 @@ namespace PPM.Infrastructure.Migrations
                             Model = "Premier B",
                             SerialNumber = "SRL-M1-2023",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(1578)
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(9783)
                         },
                         new
                         {
                             MachineId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(1614),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(9802),
                             InstallationDate = new DateOnly(2023, 3, 20),
                             IsActive = true,
                             Location = "Right Side",
@@ -336,7 +726,7 @@ namespace PPM.Infrastructure.Migrations
                             Model = "Helix 6000",
                             SerialNumber = "SRL-M2-2023",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(1615)
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(9803)
                         });
                 });
 
@@ -393,7 +783,7 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             NozzleId = new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4888),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2811),
                             CurrentMeterReading = 15234.567m,
                             FuelTypeId = new Guid("77777777-7777-7777-7777-777777777777"),
                             IsActive = true,
@@ -401,12 +791,12 @@ namespace PPM.Infrastructure.Migrations
                             NozzleName = "Petrol Nozzle 1",
                             NozzleNumber = "N1",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4890)
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2814)
                         },
                         new
                         {
                             NozzleId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4899),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2824),
                             CurrentMeterReading = 23456.789m,
                             FuelTypeId = new Guid("88888888-8888-8888-8888-888888888888"),
                             IsActive = true,
@@ -414,12 +804,12 @@ namespace PPM.Infrastructure.Migrations
                             NozzleName = "Diesel Nozzle 1",
                             NozzleNumber = "N2",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4900)
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2825)
                         },
                         new
                         {
                             NozzleId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4907),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2831),
                             CurrentMeterReading = 18765.432m,
                             FuelTypeId = new Guid("77777777-7777-7777-7777-777777777777"),
                             IsActive = true,
@@ -427,12 +817,12 @@ namespace PPM.Infrastructure.Migrations
                             NozzleName = "Petrol Nozzle 2",
                             NozzleNumber = "N1",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4908)
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2831)
                         },
                         new
                         {
                             NozzleId = new Guid("00000000-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4913),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2837),
                             CurrentMeterReading = 5678.123m,
                             FuelTypeId = new Guid("99999999-9999-9999-9999-999999999999"),
                             IsActive = true,
@@ -440,7 +830,258 @@ namespace PPM.Infrastructure.Migrations
                             NozzleName = "CNG Nozzle 1",
                             NozzleNumber = "N2",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4914)
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2837)
+                        });
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.PlanFeature", b =>
+                {
+                    b.Property<Guid>("PlanFeatureId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("FeatureId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SubscriptionPlan")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("PlanFeatureId");
+
+                    b.HasIndex("FeatureId");
+
+                    b.HasIndex("SubscriptionPlan", "FeatureId")
+                        .IsUnique();
+
+                    b.ToTable("PlanFeatures");
+
+                    b.HasData(
+                        new
+                        {
+                            PlanFeatureId = new Guid("ba000001-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3801),
+                            FeatureId = new Guid("f0000001-0000-0000-0000-000000000001"),
+                            IsEnabled = false,
+                            SubscriptionPlan = "Basic",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3804)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ba000002-0000-0000-0000-000000000002"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3818),
+                            FeatureId = new Guid("f0000002-0000-0000-0000-000000000002"),
+                            IsEnabled = false,
+                            SubscriptionPlan = "Basic",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3819)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ba000003-0000-0000-0000-000000000003"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3844),
+                            FeatureId = new Guid("f0000003-0000-0000-0000-000000000003"),
+                            IsEnabled = false,
+                            SubscriptionPlan = "Basic",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3845)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ba000004-0000-0000-0000-000000000004"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3853),
+                            FeatureId = new Guid("f0000004-0000-0000-0000-000000000004"),
+                            IsEnabled = false,
+                            SubscriptionPlan = "Basic",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3854)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ba000005-0000-0000-0000-000000000005"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3889),
+                            FeatureId = new Guid("f0000005-0000-0000-0000-000000000005"),
+                            IsEnabled = false,
+                            SubscriptionPlan = "Basic",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3890)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ba000006-0000-0000-0000-000000000006"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3895),
+                            FeatureId = new Guid("f0000006-0000-0000-0000-000000000006"),
+                            IsEnabled = false,
+                            SubscriptionPlan = "Basic",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3896)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ba000007-0000-0000-0000-000000000007"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3901),
+                            FeatureId = new Guid("f0000007-0000-0000-0000-000000000007"),
+                            IsEnabled = false,
+                            SubscriptionPlan = "Basic",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3902)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ba000008-0000-0000-0000-000000000008"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3907),
+                            FeatureId = new Guid("f0000008-0000-0000-0000-000000000008"),
+                            IsEnabled = false,
+                            SubscriptionPlan = "Basic",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3908)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ca000001-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4477),
+                            FeatureId = new Guid("f0000001-0000-0000-0000-000000000001"),
+                            IsEnabled = true,
+                            SubscriptionPlan = "Premium",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4479)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ca000002-0000-0000-0000-000000000002"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4486),
+                            FeatureId = new Guid("f0000002-0000-0000-0000-000000000002"),
+                            IsEnabled = true,
+                            SubscriptionPlan = "Premium",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4487)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ca000003-0000-0000-0000-000000000003"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4492),
+                            FeatureId = new Guid("f0000003-0000-0000-0000-000000000003"),
+                            IsEnabled = true,
+                            SubscriptionPlan = "Premium",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4493)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ca000004-0000-0000-0000-000000000004"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4499),
+                            FeatureId = new Guid("f0000004-0000-0000-0000-000000000004"),
+                            IsEnabled = true,
+                            SubscriptionPlan = "Premium",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4500)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ca000005-0000-0000-0000-000000000005"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4505),
+                            FeatureId = new Guid("f0000005-0000-0000-0000-000000000005"),
+                            IsEnabled = true,
+                            SubscriptionPlan = "Premium",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4506)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ca000006-0000-0000-0000-000000000006"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4511),
+                            FeatureId = new Guid("f0000006-0000-0000-0000-000000000006"),
+                            IsEnabled = false,
+                            SubscriptionPlan = "Premium",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4512)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ca000007-0000-0000-0000-000000000007"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4518),
+                            FeatureId = new Guid("f0000007-0000-0000-0000-000000000007"),
+                            IsEnabled = false,
+                            SubscriptionPlan = "Premium",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4519)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("ca000008-0000-0000-0000-000000000008"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4524),
+                            FeatureId = new Guid("f0000008-0000-0000-0000-000000000008"),
+                            IsEnabled = false,
+                            SubscriptionPlan = "Premium",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4525)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("da000001-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4727),
+                            FeatureId = new Guid("f0000001-0000-0000-0000-000000000001"),
+                            IsEnabled = true,
+                            SubscriptionPlan = "Enterprise",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4729)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("da000002-0000-0000-0000-000000000002"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4735),
+                            FeatureId = new Guid("f0000002-0000-0000-0000-000000000002"),
+                            IsEnabled = true,
+                            SubscriptionPlan = "Enterprise",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4736)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("da000003-0000-0000-0000-000000000003"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4744),
+                            FeatureId = new Guid("f0000003-0000-0000-0000-000000000003"),
+                            IsEnabled = true,
+                            SubscriptionPlan = "Enterprise",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4745)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("da000004-0000-0000-0000-000000000004"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4750),
+                            FeatureId = new Guid("f0000004-0000-0000-0000-000000000004"),
+                            IsEnabled = true,
+                            SubscriptionPlan = "Enterprise",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4751)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("da000005-0000-0000-0000-000000000005"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4759),
+                            FeatureId = new Guid("f0000005-0000-0000-0000-000000000005"),
+                            IsEnabled = true,
+                            SubscriptionPlan = "Enterprise",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4760)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("da000006-0000-0000-0000-000000000006"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4765),
+                            FeatureId = new Guid("f0000006-0000-0000-0000-000000000006"),
+                            IsEnabled = true,
+                            SubscriptionPlan = "Enterprise",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4766)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("da000007-0000-0000-0000-000000000007"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4772),
+                            FeatureId = new Guid("f0000007-0000-0000-0000-000000000007"),
+                            IsEnabled = true,
+                            SubscriptionPlan = "Enterprise",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4773)
+                        },
+                        new
+                        {
+                            PlanFeatureId = new Guid("da000008-0000-0000-0000-000000000008"),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4777),
+                            FeatureId = new Guid("f0000008-0000-0000-0000-000000000008"),
+                            IsEnabled = true,
+                            SubscriptionPlan = "Enterprise",
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4778)
                         });
                 });
 
@@ -472,6 +1113,9 @@ namespace PPM.Infrastructure.Migrations
                     b.Property<TimeOnly?>("EndTime")
                         .HasColumnType("time without time zone");
 
+                    b.Property<Guid>("MachineId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Notes")
                         .HasColumnType("text");
 
@@ -502,6 +1146,8 @@ namespace PPM.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("ShiftId");
+
+                    b.HasIndex("MachineId");
 
                     b.HasIndex("ShiftDate");
 
@@ -569,6 +1215,94 @@ namespace PPM.Infrastructure.Migrations
                     b.ToTable("ShiftNozzleReadings");
                 });
 
+            modelBuilder.Entity("PPM.Core.Entities.StockEntry", b =>
+                {
+                    b.Property<Guid>("StockEntryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("EntryDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("EntryType")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("FuelSaleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<decimal>("Quantity")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("numeric(18,3)");
+
+                    b.Property<Guid>("RecordedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Reference")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid?>("ShiftId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("StockAfter")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("numeric(18,3)");
+
+                    b.Property<decimal>("StockBefore")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("numeric(18,3)");
+
+                    b.Property<Guid>("TankId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal?>("TotalAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal?>("UnitPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Vendor")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("StockEntryId");
+
+                    b.HasIndex("EntryDate");
+
+                    b.HasIndex("EntryType");
+
+                    b.HasIndex("FuelSaleId");
+
+                    b.HasIndex("RecordedById");
+
+                    b.HasIndex("ShiftId");
+
+                    b.HasIndex("TankId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TenantId", "ShiftId");
+
+                    b.HasIndex("TenantId", "TankId", "EntryDate");
+
+                    b.ToTable("StockEntries");
+                });
+
             modelBuilder.Entity("PPM.Core.Entities.SystemUser", b =>
                 {
                     b.Property<Guid>("SystemUserId")
@@ -628,15 +1362,84 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             SystemUserId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 48, 655, DateTimeKind.Utc).AddTicks(6212),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 31, 620, DateTimeKind.Utc).AddTicks(6392),
                             Email = "admin@ppmapp.com",
                             FullName = "Super Administrator",
                             IsActive = true,
-                            PasswordHash = "$2a$11$kKpH0t2rSKtJCnXC1Ztf.e1vnGiHjEHax8VH1BqoTZ6AzqTkdwuR2",
+                            PasswordHash = "$2a$11$1xPyPcZIPMjDwjstGcQpHuDeimgVnVpJeIXLnFs3GbLlLjttyOMoK",
                             Role = "SuperAdmin",
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 48, 655, DateTimeKind.Utc).AddTicks(6408),
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 31, 620, DateTimeKind.Utc).AddTicks(6669),
                             Username = "superadmin"
                         });
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.Tank", b =>
+                {
+                    b.Property<Guid>("TankId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Capacity")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("numeric(18,3)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("CurrentStock")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("numeric(18,3)");
+
+                    b.Property<Guid>("FuelTypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateOnly?>("InstallationDate")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateOnly?>("LastCalibrationDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<decimal>("MinimumLevel")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("numeric(18,3)");
+
+                    b.Property<string>("TankCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("TankName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("TankId");
+
+                    b.HasIndex("FuelTypeId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TenantId", "FuelTypeId");
+
+                    b.HasIndex("TenantId", "IsActive");
+
+                    b.HasIndex("TenantId", "TankCode")
+                        .IsUnique();
+
+                    b.ToTable("Tanks");
                 });
 
             modelBuilder.Entity("PPM.Core.Entities.Tenant", b =>
@@ -746,7 +1549,7 @@ namespace PPM.Infrastructure.Migrations
                             City = "Mumbai",
                             CompanyName = "Demo Petrol Pump",
                             Country = "India",
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 48, 657, DateTimeKind.Utc).AddTicks(783),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 31, 622, DateTimeKind.Utc).AddTicks(6092),
                             Email = "demo@petroldemo.com",
                             IsActive = true,
                             MaxMachines = 5,
@@ -756,13 +1559,54 @@ namespace PPM.Infrastructure.Migrations
                             Phone = "9876543210",
                             PinCode = "400001",
                             State = "Maharashtra",
-                            SubscriptionEndDate = new DateTime(2027, 1, 7, 5, 4, 48, 656, DateTimeKind.Utc).AddTicks(6272),
+                            SubscriptionEndDate = new DateTime(2027, 1, 7, 16, 13, 31, 621, DateTimeKind.Utc).AddTicks(9671),
                             SubscriptionPlan = "Premium",
-                            SubscriptionStartDate = new DateTime(2026, 1, 7, 5, 4, 48, 656, DateTimeKind.Utc).AddTicks(6143),
+                            SubscriptionStartDate = new DateTime(2026, 1, 7, 16, 13, 31, 621, DateTimeKind.Utc).AddTicks(9462),
                             SubscriptionStatus = "Active",
                             TenantCode = "DEMO001",
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 48, 657, DateTimeKind.Utc).AddTicks(786)
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 31, 622, DateTimeKind.Utc).AddTicks(6095)
                         });
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.TenantFeature", b =>
+                {
+                    b.Property<Guid>("TenantFeatureId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("FeatureId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsOverridden")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("OverriddenAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("OverriddenBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("TenantFeatureId");
+
+                    b.HasIndex("FeatureId");
+
+                    b.HasIndex("TenantId", "FeatureId")
+                        .IsUnique();
+
+                    b.ToTable("TenantFeatures");
                 });
 
             modelBuilder.Entity("PPM.Core.Entities.User", b =>
@@ -845,68 +1689,124 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             UserId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 48, 844, DateTimeKind.Utc).AddTicks(7940),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 31, 879, DateTimeKind.Utc).AddTicks(4206),
                             Email = "owner@petroldemo.com",
                             FullName = "Rajesh Kumar",
                             IsActive = true,
-                            PasswordHash = "$2a$11$los/Rp2srhknJ0T/f8pe4Ost5MnxY2knCpOyh5kCKPLyNAYBXpd3e",
+                            PasswordHash = "$2a$11$hfbtYoaIydrnVX6WJtozvuhQZSDeOdYTA9XbSKPuxlIFTcZ2ivcnq",
                             Phone = "9876543210",
                             Role = "Owner",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 48, 844, DateTimeKind.Utc).AddTicks(7946),
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 31, 879, DateTimeKind.Utc).AddTicks(4217),
                             Username = "owner"
                         },
                         new
                         {
                             UserId = new Guid("44444444-4444-4444-4444-444444444444"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 20, DateTimeKind.Utc).AddTicks(3944),
-                            DateOfJoining = new DateTime(2025, 7, 7, 5, 4, 49, 20, DateTimeKind.Utc).AddTicks(2981),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 126, DateTimeKind.Utc).AddTicks(8096),
+                            DateOfJoining = new DateTime(2025, 7, 7, 16, 13, 32, 126, DateTimeKind.Utc).AddTicks(6955),
                             Email = "manager@petroldemo.com",
                             EmployeeCode = "MGR001",
                             FullName = "Suresh Patel",
                             IsActive = true,
-                            PasswordHash = "$2a$11$ooYuZsfUX9n53nphE2iJeuoOL7GqYZzcamjKjy3S/4orQWghMZXYu",
+                            PasswordHash = "$2a$11$nqinP/zqa5JKQzg52WEn8uwpb2Oq67OPXLVgpXoax9HjblSdjTzau",
                             Phone = "9876543211",
                             Role = "Manager",
                             Salary = 30000m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 20, DateTimeKind.Utc).AddTicks(3947),
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 126, DateTimeKind.Utc).AddTicks(8103),
                             Username = "manager"
                         },
                         new
                         {
                             UserId = new Guid("55555555-5555-5555-5555-555555555555"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 136, DateTimeKind.Utc).AddTicks(9266),
-                            DateOfJoining = new DateTime(2025, 10, 7, 5, 4, 49, 136, DateTimeKind.Utc).AddTicks(9248),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 386, DateTimeKind.Utc).AddTicks(1581),
+                            DateOfJoining = new DateTime(2025, 10, 7, 16, 13, 32, 386, DateTimeKind.Utc).AddTicks(1532),
                             Email = "ramesh@petroldemo.com",
                             EmployeeCode = "EMP001",
                             FullName = "Ramesh Kumar",
                             IsActive = true,
-                            PasswordHash = "$2a$11$E3kFNeLup.pz/PRqUj8pm.wRzDHhVBAKfJ8v9lSA04AJexsl4q4M6",
+                            PasswordHash = "$2a$11$TMSabOUR42sVEw6n8.pTTOmnrPk8u75RkgYpZqwq4KG3CNkxN/2Py",
                             Phone = "9876543212",
                             Role = "Worker",
                             Salary = 15000m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 136, DateTimeKind.Utc).AddTicks(9268),
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 386, DateTimeKind.Utc).AddTicks(1585),
                             Username = "ramesh"
                         },
                         new
                         {
                             UserId = new Guid("66666666-6666-6666-6666-666666666666"),
-                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(3206),
-                            DateOfJoining = new DateTime(2025, 11, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(3187),
+                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 650, DateTimeKind.Utc).AddTicks(4732),
+                            DateOfJoining = new DateTime(2025, 11, 7, 16, 13, 32, 650, DateTimeKind.Utc).AddTicks(4652),
                             Email = "dinesh@petroldemo.com",
                             EmployeeCode = "EMP002",
                             FullName = "Dinesh Sharma",
                             IsActive = true,
-                            PasswordHash = "$2a$11$J1FVmXbMwus3QoGnW9bueO1flIrnC/8CZ9gsgNR2RxHxA1GDp0./i",
+                            PasswordHash = "$2a$11$VI0ZYIqMlofsW30v3AJNEuiDgGlc3bY6uSsSBLLvL8XR18662a3C2",
                             Phone = "9876543213",
                             Role = "Worker",
                             Salary = 15000m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(3208),
+                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 650, DateTimeKind.Utc).AddTicks(4738),
                             Username = "dinesh"
                         });
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.CreditCustomer", b =>
+                {
+                    b.HasOne("PPM.Core.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.CreditTransaction", b =>
+                {
+                    b.HasOne("PPM.Core.Entities.CreditCustomer", "CreditCustomer")
+                        .WithMany("Transactions")
+                        .HasForeignKey("CreditCustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Core.Entities.FuelSale", "FuelSale")
+                        .WithMany()
+                        .HasForeignKey("FuelSaleId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("PPM.Core.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreditCustomer");
+
+                    b.Navigation("FuelSale");
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.Expense", b =>
+                {
+                    b.HasOne("PPM.Core.Entities.User", "RecordedBy")
+                        .WithMany()
+                        .HasForeignKey("RecordedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Core.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RecordedBy");
+
+                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("PPM.Core.Entities.FuelRate", b =>
@@ -1011,8 +1911,25 @@ namespace PPM.Infrastructure.Migrations
                     b.Navigation("Tenant");
                 });
 
+            modelBuilder.Entity("PPM.Core.Entities.PlanFeature", b =>
+                {
+                    b.HasOne("PPM.Core.Entities.Feature", "Feature")
+                        .WithMany()
+                        .HasForeignKey("FeatureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Feature");
+                });
+
             modelBuilder.Entity("PPM.Core.Entities.Shift", b =>
                 {
+                    b.HasOne("PPM.Core.Entities.Machine", "Machine")
+                        .WithMany()
+                        .HasForeignKey("MachineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PPM.Core.Entities.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
@@ -1024,6 +1941,8 @@ namespace PPM.Infrastructure.Migrations
                         .HasForeignKey("WorkerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Machine");
 
                     b.Navigation("Tenant");
 
@@ -1057,6 +1976,85 @@ namespace PPM.Infrastructure.Migrations
                     b.Navigation("Tenant");
                 });
 
+            modelBuilder.Entity("PPM.Core.Entities.StockEntry", b =>
+                {
+                    b.HasOne("PPM.Core.Entities.FuelSale", "FuelSale")
+                        .WithMany()
+                        .HasForeignKey("FuelSaleId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("PPM.Core.Entities.User", "RecordedBy")
+                        .WithMany()
+                        .HasForeignKey("RecordedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Core.Entities.Shift", "Shift")
+                        .WithMany()
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("PPM.Core.Entities.Tank", "Tank")
+                        .WithMany("StockEntries")
+                        .HasForeignKey("TankId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Core.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FuelSale");
+
+                    b.Navigation("RecordedBy");
+
+                    b.Navigation("Shift");
+
+                    b.Navigation("Tank");
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.Tank", b =>
+                {
+                    b.HasOne("PPM.Core.Entities.FuelType", "FuelType")
+                        .WithMany()
+                        .HasForeignKey("FuelTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Core.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FuelType");
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.TenantFeature", b =>
+                {
+                    b.HasOne("PPM.Core.Entities.Feature", "Feature")
+                        .WithMany()
+                        .HasForeignKey("FeatureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Core.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Feature");
+
+                    b.Navigation("Tenant");
+                });
+
             modelBuilder.Entity("PPM.Core.Entities.User", b =>
                 {
                     b.HasOne("PPM.Core.Entities.Tenant", "Tenant")
@@ -1066,6 +2064,11 @@ namespace PPM.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.CreditCustomer", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("PPM.Core.Entities.FuelType", b =>
@@ -1083,6 +2086,11 @@ namespace PPM.Infrastructure.Migrations
                     b.Navigation("FuelSales");
 
                     b.Navigation("NozzleReadings");
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.Tank", b =>
+                {
+                    b.Navigation("StockEntries");
                 });
 
             modelBuilder.Entity("PPM.Core.Entities.Tenant", b =>

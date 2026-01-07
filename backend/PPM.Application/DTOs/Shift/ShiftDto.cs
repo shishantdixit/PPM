@@ -8,6 +8,8 @@ public class ShiftDto
     public Guid TenantId { get; set; }
     public Guid WorkerId { get; set; }
     public string WorkerName { get; set; } = string.Empty;
+    public Guid MachineId { get; set; }
+    public string MachineName { get; set; } = string.Empty;
     public DateOnly ShiftDate { get; set; }
     public TimeOnly StartTime { get; set; }
     public TimeOnly? EndTime { get; set; }
@@ -46,9 +48,10 @@ public class ShiftNozzleReadingDto
 public class CreateShiftDto
 {
     public Guid? WorkerId { get; set; }  // Optional - defaults to logged-in user if not specified
+    public Guid MachineId { get; set; }  // Required - machine the worker is assigned to
     public DateOnly ShiftDate { get; set; }
     public TimeOnly StartTime { get; set; }
-    public List<NozzleReadingInput> OpeningReadings { get; set; } = new();
+    public List<NozzleReadingInput> OpeningReadings { get; set; } = new();  // If empty, all nozzles on machine are included
 }
 
 public class NozzleReadingInput
@@ -73,6 +76,7 @@ public class FuelSaleDto
     public Guid FuelSaleId { get; set; }
     public Guid ShiftId { get; set; }
     public Guid NozzleId { get; set; }
+    public string SaleNumber { get; set; } = string.Empty;
     public string NozzleNumber { get; set; } = string.Empty;
     public string FuelName { get; set; } = string.Empty;
     public decimal Quantity { get; set; }
@@ -84,6 +88,15 @@ public class FuelSaleDto
     public string? VehicleNumber { get; set; }
     public DateTime SaleTime { get; set; }
     public string? Notes { get; set; }
+    public bool IsVoided { get; set; }
+    public DateTime? VoidedAt { get; set; }
+    public string? VoidedBy { get; set; }
+    public string? VoidReason { get; set; }
+}
+
+public class VoidFuelSaleDto
+{
+    public string Reason { get; set; } = string.Empty;
 }
 
 public class CreateFuelSaleDto

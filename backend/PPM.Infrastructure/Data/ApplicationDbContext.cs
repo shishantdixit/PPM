@@ -23,6 +23,18 @@ public class ApplicationDbContext : DbContext
     public DbSet<Shift> Shifts { get; set; }
     public DbSet<ShiftNozzleReading> ShiftNozzleReadings { get; set; }
     public DbSet<FuelSale> FuelSales { get; set; }
+    public DbSet<CreditCustomer> CreditCustomers { get; set; }
+    public DbSet<CreditTransaction> CreditTransactions { get; set; }
+    public DbSet<Expense> Expenses { get; set; }
+
+    // Stock & Tank Management
+    public DbSet<Tank> Tanks { get; set; }
+    public DbSet<StockEntry> StockEntries { get; set; }
+
+    // Feature management tables
+    public DbSet<Feature> Features { get; set; }
+    public DbSet<PlanFeature> PlanFeatures { get; set; }
+    public DbSet<TenantFeature> TenantFeatures { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -46,9 +58,18 @@ public class ApplicationDbContext : DbContext
         ConfigureShifts(modelBuilder);
         ConfigureShiftNozzleReadings(modelBuilder);
         ConfigureFuelSales(modelBuilder);
+        ConfigureCreditCustomers(modelBuilder);
+        ConfigureCreditTransactions(modelBuilder);
+        ConfigureExpenses(modelBuilder);
+        ConfigureTanks(modelBuilder);
+        ConfigureStockEntries(modelBuilder);
+        ConfigureFeatures(modelBuilder);
+        ConfigurePlanFeatures(modelBuilder);
+        ConfigureTenantFeatures(modelBuilder);
 
         // Seed data
         SeedData(modelBuilder);
+        SeedFeatures(modelBuilder);
     }
 
     private void ConfigureTenants(ModelBuilder modelBuilder)
@@ -316,6 +337,105 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(e => e.Nozzle)
                 .WithMany()
                 .HasForeignKey(e => e.NozzleId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+    }
+
+    private void ConfigureCreditCustomers(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<CreditCustomer>(entity =>
+        {
+            entity.HasKey(e => e.CreditCustomerId);
+            entity.Property(e => e.CustomerCode).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.CustomerName).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.ContactPerson).HasMaxLength(200);
+            entity.Property(e => e.Phone).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.Email).HasMaxLength(100);
+            entity.Property(e => e.Address).HasMaxLength(500);
+            entity.Property(e => e.VehicleNumbers).HasMaxLength(1000);
+            entity.Property(e => e.CreditLimit).HasPrecision(18, 2);
+            entity.Property(e => e.CurrentBalance).HasPrecision(18, 2);
+            entity.Property(e => e.PaymentTermDays).HasDefaultValue(30);
+            entity.Property(e => e.BlockReason).HasMaxLength(500);
+            entity.Property(e => e.Notes).HasMaxLength(1000);
+
+            entity.HasIndex(e => e.TenantId);
+            entity.HasIndex(e => new { e.TenantId, e.CustomerCode }).IsUnique();
+            entity.HasIndex(e => new { e.TenantId, e.Phone });
+            entity.HasIndex(e => new { e.TenantId, e.IsActive });
+            entity.HasIndex(e => new { e.TenantId, e.IsBlocked });
+
+            entity.HasOne(e => e.Tenant)
+                .WithMany()
+                .HasForeignKey(e => e.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private void ConfigureCreditTransactions(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<CreditTransaction>(entity =>
+        {
+            entity.HasKey(e => e.CreditTransactionId);
+            entity.Property(e => e.TransactionType).IsRequired();
+            entity.Property(e => e.Amount).HasPrecision(18, 2).IsRequired();
+            entity.Property(e => e.BalanceAfter).HasPrecision(18, 2).IsRequired();
+            entity.Property(e => e.TransactionDate).IsRequired();
+            entity.Property(e => e.PaymentReference).HasMaxLength(100);
+            entity.Property(e => e.Notes).HasMaxLength(500);
+            entity.Property(e => e.CreatedBy).HasMaxLength(200);
+
+            entity.HasIndex(e => e.TenantId);
+            entity.HasIndex(e => e.CreditCustomerId);
+            entity.HasIndex(e => e.FuelSaleId);
+            entity.HasIndex(e => e.TransactionDate);
+            entity.HasIndex(e => e.TransactionType);
+
+            entity.HasOne(e => e.Tenant)
+                .WithMany()
+                .HasForeignKey(e => e.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.CreditCustomer)
+                .WithMany(c => c.Transactions)
+                .HasForeignKey(e => e.CreditCustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.FuelSale)
+                .WithMany()
+                .HasForeignKey(e => e.FuelSaleId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+    }
+
+    private void ConfigureExpenses(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Expense>(entity =>
+        {
+            entity.HasKey(e => e.ExpenseId);
+            entity.Property(e => e.Category).IsRequired();
+            entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.Amount).HasPrecision(18, 2).IsRequired();
+            entity.Property(e => e.ExpenseDate).IsRequired();
+            entity.Property(e => e.PaymentMode).IsRequired();
+            entity.Property(e => e.Reference).HasMaxLength(100);
+            entity.Property(e => e.Vendor).HasMaxLength(200);
+            entity.Property(e => e.Notes).HasMaxLength(1000);
+
+            entity.HasIndex(e => e.TenantId);
+            entity.HasIndex(e => e.Category);
+            entity.HasIndex(e => e.ExpenseDate);
+            entity.HasIndex(e => new { e.TenantId, e.ExpenseDate });
+            entity.HasIndex(e => new { e.TenantId, e.Category });
+
+            entity.HasOne(e => e.Tenant)
+                .WithMany()
+                .HasForeignKey(e => e.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.RecordedBy)
+                .WithMany()
+                .HasForeignKey(e => e.RecordedById)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }
@@ -619,6 +739,295 @@ public class ApplicationDbContext : DbContext
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             }
+        );
+    }
+
+    private void ConfigureTanks(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Tank>(entity =>
+        {
+            entity.HasKey(e => e.TankId);
+            entity.Property(e => e.TankName).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.TankCode).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.Capacity).HasPrecision(18, 3).IsRequired();
+            entity.Property(e => e.CurrentStock).HasPrecision(18, 3);
+            entity.Property(e => e.MinimumLevel).HasPrecision(18, 3);
+            entity.Property(e => e.Location).HasMaxLength(200);
+
+            entity.HasIndex(e => e.TenantId);
+            entity.HasIndex(e => new { e.TenantId, e.TankCode }).IsUnique();
+            entity.HasIndex(e => new { e.TenantId, e.FuelTypeId });
+            entity.HasIndex(e => new { e.TenantId, e.IsActive });
+
+            entity.HasOne(e => e.Tenant)
+                .WithMany()
+                .HasForeignKey(e => e.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.FuelType)
+                .WithMany()
+                .HasForeignKey(e => e.FuelTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+    }
+
+    private void ConfigureStockEntries(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<StockEntry>(entity =>
+        {
+            entity.HasKey(e => e.StockEntryId);
+            entity.Property(e => e.EntryType).IsRequired();
+            entity.Property(e => e.Quantity).HasPrecision(18, 3).IsRequired();
+            entity.Property(e => e.StockBefore).HasPrecision(18, 3).IsRequired();
+            entity.Property(e => e.StockAfter).HasPrecision(18, 3).IsRequired();
+            entity.Property(e => e.EntryDate).IsRequired();
+            entity.Property(e => e.Reference).HasMaxLength(100);
+            entity.Property(e => e.Vendor).HasMaxLength(200);
+            entity.Property(e => e.UnitPrice).HasPrecision(18, 2);
+            entity.Property(e => e.TotalAmount).HasPrecision(18, 2);
+            entity.Property(e => e.Notes).HasMaxLength(500);
+
+            entity.HasIndex(e => e.TenantId);
+            entity.HasIndex(e => e.TankId);
+            entity.HasIndex(e => e.EntryDate);
+            entity.HasIndex(e => e.EntryType);
+            entity.HasIndex(e => new { e.TenantId, e.TankId, e.EntryDate });
+            entity.HasIndex(e => new { e.TenantId, e.ShiftId });
+
+            entity.HasOne(e => e.Tenant)
+                .WithMany()
+                .HasForeignKey(e => e.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Tank)
+                .WithMany(t => t.StockEntries)
+                .HasForeignKey(e => e.TankId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Shift)
+                .WithMany()
+                .HasForeignKey(e => e.ShiftId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(e => e.FuelSale)
+                .WithMany()
+                .HasForeignKey(e => e.FuelSaleId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(e => e.RecordedBy)
+                .WithMany()
+                .HasForeignKey(e => e.RecordedById)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+    }
+
+    private void ConfigureFeatures(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Feature>(entity =>
+        {
+            entity.HasKey(e => e.FeatureId);
+            entity.Property(e => e.FeatureCode).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.FeatureName).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.Module).HasMaxLength(50);
+            entity.Property(e => e.Icon).HasMaxLength(50);
+
+            entity.HasIndex(e => e.FeatureCode).IsUnique();
+        });
+    }
+
+    private void ConfigurePlanFeatures(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<PlanFeature>(entity =>
+        {
+            entity.HasKey(e => e.PlanFeatureId);
+            entity.Property(e => e.SubscriptionPlan).IsRequired().HasMaxLength(50);
+
+            entity.HasIndex(e => new { e.SubscriptionPlan, e.FeatureId }).IsUnique();
+
+            entity.HasOne(e => e.Feature)
+                .WithMany()
+                .HasForeignKey(e => e.FeatureId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private void ConfigureTenantFeatures(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<TenantFeature>(entity =>
+        {
+            entity.HasKey(e => e.TenantFeatureId);
+            entity.Property(e => e.OverriddenBy).HasMaxLength(100);
+
+            entity.HasIndex(e => new { e.TenantId, e.FeatureId }).IsUnique();
+
+            entity.HasOne(e => e.Tenant)
+                .WithMany()
+                .HasForeignKey(e => e.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Feature)
+                .WithMany()
+                .HasForeignKey(e => e.FeatureId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private void SeedFeatures(ModelBuilder modelBuilder)
+    {
+        // Define feature IDs
+        var reportsId = Guid.Parse("f0000001-0000-0000-0000-000000000001");
+        var creditCustomersId = Guid.Parse("f0000002-0000-0000-0000-000000000002");
+        var expensesId = Guid.Parse("f0000003-0000-0000-0000-000000000003");
+        var multiShiftId = Guid.Parse("f0000004-0000-0000-0000-000000000004");
+        var exportId = Guid.Parse("f0000005-0000-0000-0000-000000000005");
+        var apiAccessId = Guid.Parse("f0000006-0000-0000-0000-000000000006");
+        var advancedReportsId = Guid.Parse("f0000007-0000-0000-0000-000000000007");
+        var bulkOperationsId = Guid.Parse("f0000008-0000-0000-0000-000000000008");
+
+        // Seed Features
+        modelBuilder.Entity<Feature>().HasData(
+            new Feature
+            {
+                FeatureId = reportsId,
+                FeatureCode = "REPORTS",
+                FeatureName = "Reports & Analytics",
+                Description = "Access to sales reports, dashboards, and analytics",
+                Module = "Analytics",
+                Icon = "chart-bar",
+                DisplayOrder = 1,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Feature
+            {
+                FeatureId = creditCustomersId,
+                FeatureCode = "CREDIT_CUSTOMERS",
+                FeatureName = "Credit Customer Management",
+                Description = "Manage credit customers and their balances",
+                Module = "Sales",
+                Icon = "credit-card",
+                DisplayOrder = 2,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Feature
+            {
+                FeatureId = expensesId,
+                FeatureCode = "EXPENSES",
+                FeatureName = "Expense Tracking",
+                Description = "Track and manage business expenses",
+                Module = "Finance",
+                Icon = "receipt",
+                DisplayOrder = 3,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Feature
+            {
+                FeatureId = multiShiftId,
+                FeatureCode = "MULTI_SHIFT",
+                FeatureName = "Multiple Shifts",
+                Description = "Support for multiple shifts per day",
+                Module = "Operations",
+                Icon = "clock",
+                DisplayOrder = 4,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Feature
+            {
+                FeatureId = exportId,
+                FeatureCode = "EXPORT",
+                FeatureName = "Data Export",
+                Description = "Export data to Excel and PDF",
+                Module = "Utilities",
+                Icon = "download",
+                DisplayOrder = 5,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Feature
+            {
+                FeatureId = apiAccessId,
+                FeatureCode = "API_ACCESS",
+                FeatureName = "API Access",
+                Description = "Programmatic API access for integrations",
+                Module = "Integration",
+                Icon = "code",
+                DisplayOrder = 6,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Feature
+            {
+                FeatureId = advancedReportsId,
+                FeatureCode = "ADVANCED_REPORTS",
+                FeatureName = "Advanced Reports",
+                Description = "Advanced analytics and custom reports",
+                Module = "Analytics",
+                Icon = "chart-pie",
+                DisplayOrder = 7,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Feature
+            {
+                FeatureId = bulkOperationsId,
+                FeatureCode = "BULK_OPERATIONS",
+                FeatureName = "Bulk Operations",
+                Description = "Bulk import/export and batch operations",
+                Module = "Utilities",
+                Icon = "database",
+                DisplayOrder = 8,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            }
+        );
+
+        // Seed Plan Features
+        // Basic Plan - All features disabled
+        modelBuilder.Entity<PlanFeature>().HasData(
+            new PlanFeature { PlanFeatureId = Guid.Parse("ba000001-0000-0000-0000-000000000001"), SubscriptionPlan = "Basic", FeatureId = reportsId, IsEnabled = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ba000002-0000-0000-0000-000000000002"), SubscriptionPlan = "Basic", FeatureId = creditCustomersId, IsEnabled = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ba000003-0000-0000-0000-000000000003"), SubscriptionPlan = "Basic", FeatureId = expensesId, IsEnabled = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ba000004-0000-0000-0000-000000000004"), SubscriptionPlan = "Basic", FeatureId = multiShiftId, IsEnabled = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ba000005-0000-0000-0000-000000000005"), SubscriptionPlan = "Basic", FeatureId = exportId, IsEnabled = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ba000006-0000-0000-0000-000000000006"), SubscriptionPlan = "Basic", FeatureId = apiAccessId, IsEnabled = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ba000007-0000-0000-0000-000000000007"), SubscriptionPlan = "Basic", FeatureId = advancedReportsId, IsEnabled = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ba000008-0000-0000-0000-000000000008"), SubscriptionPlan = "Basic", FeatureId = bulkOperationsId, IsEnabled = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+        );
+
+        // Premium Plan - Most features enabled
+        modelBuilder.Entity<PlanFeature>().HasData(
+            new PlanFeature { PlanFeatureId = Guid.Parse("ca000001-0000-0000-0000-000000000001"), SubscriptionPlan = "Premium", FeatureId = reportsId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ca000002-0000-0000-0000-000000000002"), SubscriptionPlan = "Premium", FeatureId = creditCustomersId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ca000003-0000-0000-0000-000000000003"), SubscriptionPlan = "Premium", FeatureId = expensesId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ca000004-0000-0000-0000-000000000004"), SubscriptionPlan = "Premium", FeatureId = multiShiftId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ca000005-0000-0000-0000-000000000005"), SubscriptionPlan = "Premium", FeatureId = exportId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ca000006-0000-0000-0000-000000000006"), SubscriptionPlan = "Premium", FeatureId = apiAccessId, IsEnabled = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ca000007-0000-0000-0000-000000000007"), SubscriptionPlan = "Premium", FeatureId = advancedReportsId, IsEnabled = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("ca000008-0000-0000-0000-000000000008"), SubscriptionPlan = "Premium", FeatureId = bulkOperationsId, IsEnabled = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+        );
+
+        // Enterprise Plan - All features enabled
+        modelBuilder.Entity<PlanFeature>().HasData(
+            new PlanFeature { PlanFeatureId = Guid.Parse("da000001-0000-0000-0000-000000000001"), SubscriptionPlan = "Enterprise", FeatureId = reportsId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("da000002-0000-0000-0000-000000000002"), SubscriptionPlan = "Enterprise", FeatureId = creditCustomersId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("da000003-0000-0000-0000-000000000003"), SubscriptionPlan = "Enterprise", FeatureId = expensesId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("da000004-0000-0000-0000-000000000004"), SubscriptionPlan = "Enterprise", FeatureId = multiShiftId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("da000005-0000-0000-0000-000000000005"), SubscriptionPlan = "Enterprise", FeatureId = exportId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("da000006-0000-0000-0000-000000000006"), SubscriptionPlan = "Enterprise", FeatureId = apiAccessId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("da000007-0000-0000-0000-000000000007"), SubscriptionPlan = "Enterprise", FeatureId = advancedReportsId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+            new PlanFeature { PlanFeatureId = Guid.Parse("da000008-0000-0000-0000-000000000008"), SubscriptionPlan = "Enterprise", FeatureId = bulkOperationsId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
         );
     }
 }

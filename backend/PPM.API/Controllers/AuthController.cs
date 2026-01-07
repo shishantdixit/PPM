@@ -109,7 +109,8 @@ public class AuthController : ControllerBase
                 Role = systemUser.Role,
                 TenantId = null,
                 TenantCode = null,
-                TenantName = null
+                TenantName = null,
+                IsSuperAdmin = true
             }
         };
 
@@ -193,7 +194,8 @@ public class AuthController : ControllerBase
                 Role = user.Role,
                 TenantId = tenant.TenantId,
                 TenantCode = tenant.TenantCode,
-                TenantName = tenant.CompanyName
+                TenantName = tenant.CompanyName,
+                IsSuperAdmin = false
             }
         };
 

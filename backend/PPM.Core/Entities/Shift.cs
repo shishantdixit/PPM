@@ -6,6 +6,7 @@ public class Shift : TenantEntity
 {
     public Guid ShiftId { get; set; }
     public Guid WorkerId { get; set; }
+    public Guid MachineId { get; set; }  // Machine the worker is assigned to
     public DateOnly ShiftDate { get; set; }
     public TimeOnly StartTime { get; set; }
     public TimeOnly? EndTime { get; set; }
@@ -23,6 +24,7 @@ public class Shift : TenantEntity
     // Navigation properties
     public Tenant? Tenant { get; set; }
     public User? Worker { get; set; }
+    public Machine? Machine { get; set; }
     public ICollection<ShiftNozzleReading> NozzleReadings { get; set; } = new List<ShiftNozzleReading>();
     public ICollection<FuelSale> FuelSales { get; set; } = new List<FuelSale>();
 }

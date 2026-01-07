@@ -24,4 +24,5 @@ public class UserInfoDto
     public Guid? TenantId { get; set; }
     public string? TenantCode { get; set; }
     public string? TenantName { get; set; }
+    public bool IsSuperAdmin { get; set; }
 }

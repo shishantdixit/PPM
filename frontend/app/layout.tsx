@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+import { FeatureProvider } from "@/context/FeatureContext";
 
 export const metadata: Metadata = {
   title: "PPM - Petrol Pump Management",
@@ -16,7 +17,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <AuthProvider>
-          {children}
+          <FeatureProvider>
+            {children}
+          </FeatureProvider>
         </AuthProvider>
       </body>
     </html>

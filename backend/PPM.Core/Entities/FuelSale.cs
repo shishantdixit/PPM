@@ -8,6 +8,9 @@ public class FuelSale : TenantEntity
     public Guid ShiftId { get; set; }
     public Guid NozzleId { get; set; }
 
+    // Bill/Sale Number - Format: {TenantCode}-{YYYYMMDD}-{Seq:00000}
+    public string SaleNumber { get; set; } = string.Empty;
+
     public decimal Quantity { get; set; }
     public decimal Rate { get; set; }
     public decimal Amount { get; set; }
@@ -18,6 +21,12 @@ public class FuelSale : TenantEntity
     public string? VehicleNumber { get; set; }
     public DateTime SaleTime { get; set; }
     public string? Notes { get; set; }
+
+    // Void tracking
+    public bool IsVoided { get; set; }
+    public DateTime? VoidedAt { get; set; }
+    public string? VoidedBy { get; set; }
+    public string? VoidReason { get; set; }
 
     // Navigation properties
     public Tenant? Tenant { get; set; }

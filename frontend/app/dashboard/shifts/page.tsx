@@ -3,17 +3,20 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
-import type { Shift, Nozzle, CreateShiftDto, CloseShiftDto, NozzleReadingInput, ShiftStatus, Worker } from '@/types';
+import type { Shift, CreateShiftDto, CloseShiftDto, NozzleReadingInput, ShiftStatus, Worker, ShiftMachine, ShiftNozzle } from '@/types';
 import SaleEntryForm from '@/components/SaleEntryForm';
 import SalesList from '@/components/SalesList';
 
 export default function ShiftsPage() {
   const router = useRouter();
   const [activeShift, setActiveShift] = useState<Shift | null>(null);
-  const [nozzles, setNozzles] = useState<Nozzle[]>([]);
   const [workers, setWorkers] = useState<Worker[]>([]);
+  const [machines, setMachines] = useState<ShiftMachine[]>([]);
+  const [nozzles, setNozzles] = useState<ShiftNozzle[]>([]);
+  const [selectedMachineId, setSelectedMachineId] = useState<string>('');
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingNozzles, setLoadingNozzles] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<'view' | 'start' | 'close'>('view');
   const [salesRefreshTrigger, setSalesRefreshTrigger] = useState(0);
@@ -22,6 +25,7 @@ export default function ShiftsPage() {
   // Start shift form state
   const [startShiftData, setStartShiftData] = useState<CreateShiftDto>({
     workerId: undefined,
+    machineId: '',
     shiftDate: new Date().toISOString().split('T')[0],
     startTime: new Date().toTimeString().split(' ')[0].substring(0, 5),
     openingReadings: [],
@@ -48,7 +52,7 @@ export default function ShiftsPage() {
       setError(null);
 
       // Load current user from localStorage
-      const user = api.getUser();
+      const user = api.getStoredUser();
       setCurrentUser(user);
 
       // Load active shift
@@ -64,17 +68,10 @@ export default function ShiftsPage() {
         }));
         setCloseShiftData(prev => ({ ...prev, closingReadings }));
       } else {
-        // No active shift, load nozzles for starting new shift
-        const nozzlesResponse = await api.getNozzles(undefined, true);
-        if (nozzlesResponse.success && nozzlesResponse.data) {
-          setNozzles(nozzlesResponse.data);
-
-          // Initialize opening readings with current meter readings
-          const openingReadings: NozzleReadingInput[] = nozzlesResponse.data.map(n => ({
-            nozzleId: n.nozzleId,
-            reading: n.currentMeterReading,
-          }));
-          setStartShiftData(prev => ({ ...prev, openingReadings }));
+        // No active shift, load machines for starting new shift
+        const machinesResponse = await api.getShiftMachines();
+        if (machinesResponse.success && machinesResponse.data) {
+          setMachines(machinesResponse.data);
         }
 
         // Load workers if user is Manager or Owner
@@ -93,6 +90,38 @@ export default function ShiftsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Load nozzles when machine is selected
+  const loadMachineNozzles = async (machineId: string) => {
+    if (!machineId) {
+      setNozzles([]);
+      setStartShiftData(prev => ({ ...prev, machineId: '', openingReadings: [] }));
+      return;
+    }
+
+    try {
+      setLoadingNozzles(true);
+      const response = await api.getShiftMachineNozzles(machineId);
+      if (response.success && response.data) {
+        setNozzles(response.data);
+        // Initialize opening readings with current meter readings
+        const openingReadings: NozzleReadingInput[] = response.data.map(n => ({
+          nozzleId: n.nozzleId,
+          reading: n.currentMeterReading,
+        }));
+        setStartShiftData(prev => ({ ...prev, machineId, openingReadings }));
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to load nozzles');
+    } finally {
+      setLoadingNozzles(false);
+    }
+  };
+
+  const handleMachineChange = (machineId: string) => {
+    setSelectedMachineId(machineId);
+    loadMachineNozzles(machineId);
   };
 
   const handleStartShift = async () => {
@@ -173,10 +202,14 @@ export default function ShiftsPage() {
         )}
 
         <div className="bg-white rounded-lg shadow p-6 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div>
               <p className="text-sm text-gray-500">Worker</p>
               <p className="font-medium">{activeShift.workerName}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Machine</p>
+              <p className="font-medium">{activeShift.machineName}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Shift Date</p>
@@ -457,9 +490,13 @@ export default function ShiftsPage() {
       )}
 
       <div className="bg-white rounded-lg shadow p-6 space-y-6">
+        {/* Step 1: Worker Selection (for Manager/Owner) */}
         {currentUser && (currentUser.role === 'Manager' || currentUser.role === 'Owner') && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Select Worker *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs mr-2">Step 1</span>
+              Select Worker *
+            </label>
             <select
               value={startShiftData.workerId || ''}
               onChange={(e) => setStartShiftData(prev => ({ ...prev, workerId: e.target.value || undefined }))}
@@ -476,6 +513,34 @@ export default function ShiftsPage() {
           </div>
         )}
 
+        {/* Step 2: Machine Selection */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs mr-2">
+              {currentUser && (currentUser.role === 'Manager' || currentUser.role === 'Owner') ? 'Step 2' : 'Step 1'}
+            </span>
+            Select Machine *
+          </label>
+          <select
+            value={selectedMachineId}
+            onChange={(e) => handleMachineChange(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            required
+          >
+            <option value="">-- Select Machine --</option>
+            {machines.map((machine) => (
+              <option key={machine.machineId} value={machine.machineId}>
+                {machine.machineName} ({machine.machineCode}) - {machine.nozzleCount} nozzles
+                {machine.location && ` - ${machine.location}`}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-gray-500 mt-1">
+            Worker will be responsible for all nozzles on the selected machine
+          </p>
+        </div>
+
+        {/* Date/Time Selection */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Shift Date</label>
@@ -497,40 +562,61 @@ export default function ShiftsPage() {
           </div>
         </div>
 
-        <div>
-          <h3 className="font-semibold mb-3">Opening Meter Readings</h3>
-          <div className="space-y-3">
-            {nozzles.map((nozzle) => {
-              const reading = startShiftData.openingReadings.find(r => r.nozzleId === nozzle.nozzleId);
-              return (
-                <div key={nozzle.nozzleId} className="grid grid-cols-4 gap-4 items-center p-3 bg-gray-50 rounded">
-                  <div className="col-span-2">
-                    <p className="text-sm font-medium">{nozzle.nozzleNumber} - {nozzle.fuelName}</p>
-                    <p className="text-xs text-gray-500">{nozzle.machineName}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-500">Current Reading</p>
-                    <p className="text-sm">{nozzle.currentMeterReading.toFixed(2)}</p>
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-500">Opening Reading</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={reading?.reading || nozzle.currentMeterReading}
-                      onChange={(e) => updateOpeningReading(nozzle.nozzleId, parseFloat(e.target.value) || 0)}
-                      className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-                    />
-                  </div>
-                </div>
-              );
-            })}
+        {/* Step 3: Nozzle Readings (shown after machine is selected) */}
+        {selectedMachineId && (
+          <div>
+            <h3 className="font-semibold mb-3">
+              <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs mr-2">
+                {currentUser && (currentUser.role === 'Manager' || currentUser.role === 'Owner') ? 'Step 3' : 'Step 2'}
+              </span>
+              Opening Meter Readings
+            </h3>
+            {loadingNozzles ? (
+              <div className="p-4 text-center text-gray-500">Loading nozzles...</div>
+            ) : nozzles.length === 0 ? (
+              <div className="p-4 text-center text-yellow-600 bg-yellow-50 rounded">
+                No active nozzles found for this machine
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {nozzles.map((nozzle) => {
+                  const reading = startShiftData.openingReadings.find(r => r.nozzleId === nozzle.nozzleId);
+                  return (
+                    <div key={nozzle.nozzleId} className="grid grid-cols-4 gap-4 items-center p-3 bg-gray-50 rounded">
+                      <div className="col-span-2">
+                        <p className="text-sm font-medium">{nozzle.nozzleNumber} - {nozzle.fuelName}</p>
+                        <p className="text-xs text-gray-500">{nozzle.nozzleName || nozzle.fuelCode}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-500">Current Reading</p>
+                        <p className="text-sm">{nozzle.currentMeterReading.toFixed(2)}</p>
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-500">Opening Reading</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={reading?.reading ?? nozzle.currentMeterReading}
+                          onChange={(e) => updateOpeningReading(nozzle.nozzleId, parseFloat(e.target.value) || 0)}
+                          className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
         <button
           onClick={handleStartShift}
-          className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+          disabled={!selectedMachineId || nozzles.length === 0}
+          className={`w-full py-3 rounded-lg font-medium ${
+            !selectedMachineId || nozzles.length === 0
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
+          }`}
         >
           Start Shift
         </button>
