@@ -68,36 +68,105 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             FuelRateId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(7859),
-                            EffectiveFrom = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(7149),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9108),
+                            EffectiveFrom = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(8313),
                             FuelTypeId = new Guid("77777777-7777-7777-7777-777777777777"),
                             Rate = 102.50m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(7860),
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9109),
                             UpdatedBy = new Guid("33333333-3333-3333-3333-333333333333")
                         },
                         new
                         {
                             FuelRateId = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(7866),
-                            EffectiveFrom = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(7865),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9117),
+                            EffectiveFrom = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9115),
                             FuelTypeId = new Guid("88888888-8888-8888-8888-888888888888"),
                             Rate = 89.75m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(7867),
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9117),
                             UpdatedBy = new Guid("33333333-3333-3333-3333-333333333333")
                         },
                         new
                         {
                             FuelRateId = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(7871),
-                            EffectiveFrom = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(7870),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9121),
+                            EffectiveFrom = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9120),
                             FuelTypeId = new Guid("99999999-9999-9999-9999-999999999999"),
                             Rate = 75.00m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(7871),
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(9122),
                             UpdatedBy = new Guid("33333333-3333-3333-3333-333333333333")
                         });
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.FuelSale", b =>
+                {
+                    b.Property<Guid>("FuelSaleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CustomerName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("CustomerPhone")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("NozzleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Quantity")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("numeric(18,3)");
+
+                    b.Property<decimal>("Rate")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTime>("SaleTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ShiftId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("VehicleNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("FuelSaleId");
+
+                    b.HasIndex("NozzleId");
+
+                    b.HasIndex("PaymentMethod");
+
+                    b.HasIndex("SaleTime");
+
+                    b.HasIndex("ShiftId");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("FuelSales");
                 });
 
             modelBuilder.Entity("PPM.Core.Entities.FuelType", b =>
@@ -148,35 +217,35 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             FuelTypeId = new Guid("77777777-7777-7777-7777-777777777777"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(5826),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(6771),
                             FuelCode = "PTR",
                             FuelName = "Petrol",
                             IsActive = true,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Unit = "Liters",
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(5828)
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(6772)
                         },
                         new
                         {
                             FuelTypeId = new Guid("88888888-8888-8888-8888-888888888888"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(5835),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(6778),
                             FuelCode = "DSL",
                             FuelName = "Diesel",
                             IsActive = true,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Unit = "Liters",
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(5835)
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(6778)
                         },
                         new
                         {
                             FuelTypeId = new Guid("99999999-9999-9999-9999-999999999999"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(5837),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(6781),
                             FuelCode = "CNG",
                             FuelName = "CNG",
                             IsActive = true,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Unit = "Kg",
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(5838)
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(6782)
                         });
                 });
 
@@ -242,7 +311,7 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             MachineId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 896, DateTimeKind.Utc).AddTicks(600),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(1573),
                             InstallationDate = new DateOnly(2023, 1, 15),
                             IsActive = true,
                             Location = "Left Side",
@@ -252,12 +321,12 @@ namespace PPM.Infrastructure.Migrations
                             Model = "Premier B",
                             SerialNumber = "SRL-M1-2023",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 896, DateTimeKind.Utc).AddTicks(601)
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(1578)
                         },
                         new
                         {
                             MachineId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 896, DateTimeKind.Utc).AddTicks(610),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(1614),
                             InstallationDate = new DateOnly(2023, 3, 20),
                             IsActive = true,
                             Location = "Right Side",
@@ -267,7 +336,7 @@ namespace PPM.Infrastructure.Migrations
                             Model = "Helix 6000",
                             SerialNumber = "SRL-M2-2023",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 896, DateTimeKind.Utc).AddTicks(610)
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(1615)
                         });
                 });
 
@@ -324,7 +393,7 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             NozzleId = new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 896, DateTimeKind.Utc).AddTicks(2019),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4888),
                             CurrentMeterReading = 15234.567m,
                             FuelTypeId = new Guid("77777777-7777-7777-7777-777777777777"),
                             IsActive = true,
@@ -332,12 +401,12 @@ namespace PPM.Infrastructure.Migrations
                             NozzleName = "Petrol Nozzle 1",
                             NozzleNumber = "N1",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 896, DateTimeKind.Utc).AddTicks(2019)
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4890)
                         },
                         new
                         {
                             NozzleId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 896, DateTimeKind.Utc).AddTicks(2026),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4899),
                             CurrentMeterReading = 23456.789m,
                             FuelTypeId = new Guid("88888888-8888-8888-8888-888888888888"),
                             IsActive = true,
@@ -345,12 +414,12 @@ namespace PPM.Infrastructure.Migrations
                             NozzleName = "Diesel Nozzle 1",
                             NozzleNumber = "N2",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 896, DateTimeKind.Utc).AddTicks(2026)
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4900)
                         },
                         new
                         {
                             NozzleId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 896, DateTimeKind.Utc).AddTicks(2029),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4907),
                             CurrentMeterReading = 18765.432m,
                             FuelTypeId = new Guid("77777777-7777-7777-7777-777777777777"),
                             IsActive = true,
@@ -358,12 +427,12 @@ namespace PPM.Infrastructure.Migrations
                             NozzleName = "Petrol Nozzle 2",
                             NozzleNumber = "N1",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 896, DateTimeKind.Utc).AddTicks(2029)
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4908)
                         },
                         new
                         {
                             NozzleId = new Guid("00000000-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 896, DateTimeKind.Utc).AddTicks(2032),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4913),
                             CurrentMeterReading = 5678.123m,
                             FuelTypeId = new Guid("99999999-9999-9999-9999-999999999999"),
                             IsActive = true,
@@ -371,8 +440,133 @@ namespace PPM.Infrastructure.Migrations
                             NozzleName = "CNG Nozzle 1",
                             NozzleNumber = "N2",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 896, DateTimeKind.Utc).AddTicks(2033)
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 265, DateTimeKind.Utc).AddTicks(4914)
                         });
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.Shift", b =>
+                {
+                    b.Property<Guid>("ShiftId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Borrowing")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal>("CashCollected")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("CreditSales")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal>("DigitalPayments")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<TimeOnly?>("EndTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<DateOnly>("ShiftDate")
+                        .HasColumnType("date");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("TotalSales")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Variance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<Guid>("WorkerId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ShiftId");
+
+                    b.HasIndex("ShiftDate");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("Shifts");
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.ShiftNozzleReading", b =>
+                {
+                    b.Property<Guid>("ShiftNozzleReadingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal?>("ClosingReading")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("numeric(18,3)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("ExpectedAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<Guid>("NozzleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("OpeningReading")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("numeric(18,3)");
+
+                    b.Property<decimal>("QuantitySold")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("numeric(18,3)");
+
+                    b.Property<decimal>("RateAtShift")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<Guid>("ShiftId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("ShiftNozzleReadingId");
+
+                    b.HasIndex("NozzleId");
+
+                    b.HasIndex("ShiftId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("ShiftId", "NozzleId")
+                        .IsUnique();
+
+                    b.ToTable("ShiftNozzleReadings");
                 });
 
             modelBuilder.Entity("PPM.Core.Entities.SystemUser", b =>
@@ -434,13 +628,13 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             SystemUserId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 118, DateTimeKind.Utc).AddTicks(7596),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 48, 655, DateTimeKind.Utc).AddTicks(6212),
                             Email = "admin@ppmapp.com",
                             FullName = "Super Administrator",
                             IsActive = true,
-                            PasswordHash = "$2a$11$IAZW0nQU4pHQcssG0pdgxuXNhsRTRaHFe7hVC9lJQwwKC.XbZ1KqW",
+                            PasswordHash = "$2a$11$kKpH0t2rSKtJCnXC1Ztf.e1vnGiHjEHax8VH1BqoTZ6AzqTkdwuR2",
                             Role = "SuperAdmin",
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 118, DateTimeKind.Utc).AddTicks(7847),
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 48, 655, DateTimeKind.Utc).AddTicks(6408),
                             Username = "superadmin"
                         });
                 });
@@ -552,7 +746,7 @@ namespace PPM.Infrastructure.Migrations
                             City = "Mumbai",
                             CompanyName = "Demo Petrol Pump",
                             Country = "India",
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 119, DateTimeKind.Utc).AddTicks(9982),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 48, 657, DateTimeKind.Utc).AddTicks(783),
                             Email = "demo@petroldemo.com",
                             IsActive = true,
                             MaxMachines = 5,
@@ -562,12 +756,12 @@ namespace PPM.Infrastructure.Migrations
                             Phone = "9876543210",
                             PinCode = "400001",
                             State = "Maharashtra",
-                            SubscriptionEndDate = new DateTime(2027, 1, 6, 17, 56, 47, 119, DateTimeKind.Utc).AddTicks(9105),
+                            SubscriptionEndDate = new DateTime(2027, 1, 7, 5, 4, 48, 656, DateTimeKind.Utc).AddTicks(6272),
                             SubscriptionPlan = "Premium",
-                            SubscriptionStartDate = new DateTime(2026, 1, 6, 17, 56, 47, 119, DateTimeKind.Utc).AddTicks(8947),
+                            SubscriptionStartDate = new DateTime(2026, 1, 7, 5, 4, 48, 656, DateTimeKind.Utc).AddTicks(6143),
                             SubscriptionStatus = "Active",
                             TenantCode = "DEMO001",
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 119, DateTimeKind.Utc).AddTicks(9983)
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 48, 657, DateTimeKind.Utc).AddTicks(786)
                         });
                 });
 
@@ -651,66 +845,66 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             UserId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 374, DateTimeKind.Utc).AddTicks(6210),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 48, 844, DateTimeKind.Utc).AddTicks(7940),
                             Email = "owner@petroldemo.com",
                             FullName = "Rajesh Kumar",
                             IsActive = true,
-                            PasswordHash = "$2a$11$X/9IBFn0Tmn6SqVVqmsSl.LPU3CCwXRgacwz696HToBhi1SA4wckW",
+                            PasswordHash = "$2a$11$los/Rp2srhknJ0T/f8pe4Ost5MnxY2knCpOyh5kCKPLyNAYBXpd3e",
                             Phone = "9876543210",
                             Role = "Owner",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 374, DateTimeKind.Utc).AddTicks(6219),
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 48, 844, DateTimeKind.Utc).AddTicks(7946),
                             Username = "owner"
                         },
                         new
                         {
                             UserId = new Guid("44444444-4444-4444-4444-444444444444"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 616, DateTimeKind.Utc).AddTicks(6813),
-                            DateOfJoining = new DateTime(2025, 7, 6, 17, 56, 47, 616, DateTimeKind.Utc).AddTicks(5643),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 20, DateTimeKind.Utc).AddTicks(3944),
+                            DateOfJoining = new DateTime(2025, 7, 7, 5, 4, 49, 20, DateTimeKind.Utc).AddTicks(2981),
                             Email = "manager@petroldemo.com",
                             EmployeeCode = "MGR001",
                             FullName = "Suresh Patel",
                             IsActive = true,
-                            PasswordHash = "$2a$11$erBYpjJblLycx54Poslw5ukpuTAVuVMXwUq3K2PaUx8exyLm5cPvy",
+                            PasswordHash = "$2a$11$ooYuZsfUX9n53nphE2iJeuoOL7GqYZzcamjKjy3S/4orQWghMZXYu",
                             Phone = "9876543211",
                             Role = "Manager",
                             Salary = 30000m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 616, DateTimeKind.Utc).AddTicks(6817),
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 20, DateTimeKind.Utc).AddTicks(3947),
                             Username = "manager"
                         },
                         new
                         {
                             UserId = new Guid("55555555-5555-5555-5555-555555555555"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 754, DateTimeKind.Utc).AddTicks(8492),
-                            DateOfJoining = new DateTime(2025, 10, 6, 17, 56, 47, 754, DateTimeKind.Utc).AddTicks(8471),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 136, DateTimeKind.Utc).AddTicks(9266),
+                            DateOfJoining = new DateTime(2025, 10, 7, 5, 4, 49, 136, DateTimeKind.Utc).AddTicks(9248),
                             Email = "ramesh@petroldemo.com",
                             EmployeeCode = "EMP001",
                             FullName = "Ramesh Kumar",
                             IsActive = true,
-                            PasswordHash = "$2a$11$gp0JbMF9CJccBTCTXd84AutJsRg/f5Kp7pE1PRHjZQOxAXS8zx95i",
+                            PasswordHash = "$2a$11$E3kFNeLup.pz/PRqUj8pm.wRzDHhVBAKfJ8v9lSA04AJexsl4q4M6",
                             Phone = "9876543212",
                             Role = "Worker",
                             Salary = 15000m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 754, DateTimeKind.Utc).AddTicks(8496),
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 136, DateTimeKind.Utc).AddTicks(9268),
                             Username = "ramesh"
                         },
                         new
                         {
                             UserId = new Guid("66666666-6666-6666-6666-666666666666"),
-                            CreatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(2188),
-                            DateOfJoining = new DateTime(2025, 11, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(2053),
+                            CreatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(3206),
+                            DateOfJoining = new DateTime(2025, 11, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(3187),
                             Email = "dinesh@petroldemo.com",
                             EmployeeCode = "EMP002",
                             FullName = "Dinesh Sharma",
                             IsActive = true,
-                            PasswordHash = "$2a$11$16p/gZ1czTJyC208WL/QtOGMdr19vxPqr6B.0m3S3fpQb/1K8Q4LS",
+                            PasswordHash = "$2a$11$J1FVmXbMwus3QoGnW9bueO1flIrnC/8CZ9gsgNR2RxHxA1GDp0./i",
                             Phone = "9876543213",
                             Role = "Worker",
                             Salary = 15000m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 6, 17, 56, 47, 895, DateTimeKind.Utc).AddTicks(2193),
+                            UpdatedAt = new DateTime(2026, 1, 7, 5, 4, 49, 257, DateTimeKind.Utc).AddTicks(3208),
                             Username = "dinesh"
                         });
                 });
@@ -739,6 +933,33 @@ namespace PPM.Infrastructure.Migrations
                     b.Navigation("Tenant");
 
                     b.Navigation("UpdatedByUser");
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.FuelSale", b =>
+                {
+                    b.HasOne("PPM.Core.Entities.Nozzle", "Nozzle")
+                        .WithMany()
+                        .HasForeignKey("NozzleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Core.Entities.Shift", "Shift")
+                        .WithMany("FuelSales")
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Core.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Nozzle");
+
+                    b.Navigation("Shift");
+
+                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("PPM.Core.Entities.FuelType", b =>
@@ -790,6 +1011,52 @@ namespace PPM.Infrastructure.Migrations
                     b.Navigation("Tenant");
                 });
 
+            modelBuilder.Entity("PPM.Core.Entities.Shift", b =>
+                {
+                    b.HasOne("PPM.Core.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Core.Entities.User", "Worker")
+                        .WithMany()
+                        .HasForeignKey("WorkerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("Worker");
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.ShiftNozzleReading", b =>
+                {
+                    b.HasOne("PPM.Core.Entities.Nozzle", "Nozzle")
+                        .WithMany()
+                        .HasForeignKey("NozzleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Core.Entities.Shift", "Shift")
+                        .WithMany("NozzleReadings")
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Core.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Nozzle");
+
+                    b.Navigation("Shift");
+
+                    b.Navigation("Tenant");
+                });
+
             modelBuilder.Entity("PPM.Core.Entities.User", b =>
                 {
                     b.HasOne("PPM.Core.Entities.Tenant", "Tenant")
@@ -809,6 +1076,13 @@ namespace PPM.Infrastructure.Migrations
             modelBuilder.Entity("PPM.Core.Entities.Machine", b =>
                 {
                     b.Navigation("Nozzles");
+                });
+
+            modelBuilder.Entity("PPM.Core.Entities.Shift", b =>
+                {
+                    b.Navigation("FuelSales");
+
+                    b.Navigation("NozzleReadings");
                 });
 
             modelBuilder.Entity("PPM.Core.Entities.Tenant", b =>

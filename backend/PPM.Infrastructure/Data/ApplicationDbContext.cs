@@ -218,6 +218,108 @@ public class ApplicationDbContext : DbContext
         });
     }
 
+    private void ConfigureShifts(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Shift>(entity =>
+        {
+            entity.HasKey(e => e.ShiftId);
+            entity.Property(e => e.ShiftDate).IsRequired();
+            entity.Property(e => e.StartTime).IsRequired();
+            entity.Property(e => e.Status).IsRequired();
+            entity.Property(e => e.TotalSales).HasPrecision(18, 2);
+            entity.Property(e => e.CashCollected).HasPrecision(18, 2);
+            entity.Property(e => e.CreditSales).HasPrecision(18, 2);
+            entity.Property(e => e.DigitalPayments).HasPrecision(18, 2);
+            entity.Property(e => e.Borrowing).HasPrecision(18, 2);
+            entity.Property(e => e.Variance).HasPrecision(18, 2);
+
+            entity.HasIndex(e => e.TenantId);
+            entity.HasIndex(e => e.WorkerId);
+            entity.HasIndex(e => e.ShiftDate);
+            entity.HasIndex(e => e.Status);
+
+            entity.HasOne(e => e.Tenant)
+                .WithMany()
+                .HasForeignKey(e => e.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Worker)
+                .WithMany()
+                .HasForeignKey(e => e.WorkerId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+    }
+
+    private void ConfigureShiftNozzleReadings(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ShiftNozzleReading>(entity =>
+        {
+            entity.HasKey(e => e.ShiftNozzleReadingId);
+            entity.Property(e => e.OpeningReading).HasPrecision(18, 3).IsRequired();
+            entity.Property(e => e.ClosingReading).HasPrecision(18, 3);
+            entity.Property(e => e.QuantitySold).HasPrecision(18, 3);
+            entity.Property(e => e.RateAtShift).HasPrecision(18, 2).IsRequired();
+            entity.Property(e => e.ExpectedAmount).HasPrecision(18, 2);
+
+            entity.HasIndex(e => e.TenantId);
+            entity.HasIndex(e => e.ShiftId);
+            entity.HasIndex(e => e.NozzleId);
+            entity.HasIndex(e => new { e.ShiftId, e.NozzleId }).IsUnique();
+
+            entity.HasOne(e => e.Tenant)
+                .WithMany()
+                .HasForeignKey(e => e.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Shift)
+                .WithMany(s => s.NozzleReadings)
+                .HasForeignKey(e => e.ShiftId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Nozzle)
+                .WithMany()
+                .HasForeignKey(e => e.NozzleId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+    }
+
+    private void ConfigureFuelSales(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<FuelSale>(entity =>
+        {
+            entity.HasKey(e => e.FuelSaleId);
+            entity.Property(e => e.Quantity).HasPrecision(18, 3).IsRequired();
+            entity.Property(e => e.Rate).HasPrecision(18, 2).IsRequired();
+            entity.Property(e => e.Amount).HasPrecision(18, 2).IsRequired();
+            entity.Property(e => e.PaymentMethod).IsRequired();
+            entity.Property(e => e.SaleTime).IsRequired();
+            entity.Property(e => e.CustomerName).HasMaxLength(200);
+            entity.Property(e => e.CustomerPhone).HasMaxLength(20);
+            entity.Property(e => e.VehicleNumber).HasMaxLength(50);
+
+            entity.HasIndex(e => e.TenantId);
+            entity.HasIndex(e => e.ShiftId);
+            entity.HasIndex(e => e.NozzleId);
+            entity.HasIndex(e => e.SaleTime);
+            entity.HasIndex(e => e.PaymentMethod);
+
+            entity.HasOne(e => e.Tenant)
+                .WithMany()
+                .HasForeignKey(e => e.TenantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Shift)
+                .WithMany(s => s.FuelSales)
+                .HasForeignKey(e => e.ShiftId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Nozzle)
+                .WithMany()
+                .HasForeignKey(e => e.NozzleId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+    }
+
     private void SeedData(ModelBuilder modelBuilder)
     {
         // Seed Super Admin

@@ -28,13 +28,19 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     return null;
   }
 
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: '📊' },
-    { name: 'Fuel Types', href: '/dashboard/fuel-types', icon: '⛽' },
-    { name: 'Fuel Rates', href: '/dashboard/fuel-rates', icon: '💰' },
-    { name: 'Machines', href: '/dashboard/machines', icon: '🔧' },
-    { name: 'Nozzles', href: '/dashboard/nozzles', icon: '🚿' },
+  const baseNavigation = [
+    { name: 'Dashboard', href: '/dashboard', icon: '📊', roles: ['Worker', 'Manager', 'Owner'] },
+    { name: 'My Shift', href: '/dashboard/shifts', icon: '👷', roles: ['Worker', 'Manager', 'Owner'] },
+    { name: 'All Shifts', href: '/dashboard/shifts/all', icon: '📋', roles: ['Manager', 'Owner'] },
+    { name: 'Fuel Types', href: '/dashboard/fuel-types', icon: '⛽', roles: ['Manager', 'Owner'] },
+    { name: 'Fuel Rates', href: '/dashboard/fuel-rates', icon: '💰', roles: ['Manager', 'Owner'] },
+    { name: 'Machines', href: '/dashboard/machines', icon: '🔧', roles: ['Manager', 'Owner'] },
+    { name: 'Nozzles', href: '/dashboard/nozzles', icon: '🚿', roles: ['Manager', 'Owner'] },
   ];
+
+  const navigation = baseNavigation.filter(item =>
+    item.roles.includes(user?.role || '')
+  );
 
   const isActive = (href: string) => {
     if (href === '/dashboard') {

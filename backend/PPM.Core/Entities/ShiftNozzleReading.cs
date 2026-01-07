@@ -1,3 +1,5 @@
+using PPM.Core.Common;
+
 namespace PPM.Core.Entities;
 
 public class ShiftNozzleReading : TenantEntity

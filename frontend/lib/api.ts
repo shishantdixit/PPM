@@ -15,6 +15,13 @@ import type {
   Nozzle,
   CreateNozzleDto,
   UpdateNozzleDto,
+  Shift,
+  CreateShiftDto,
+  CloseShiftDto,
+  ShiftStatus,
+  Worker,
+  FuelSale,
+  CreateFuelSaleDto,
 } from '@/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -207,6 +214,68 @@ class ApiClient {
 
   async deleteNozzle(id: string): Promise<ApiResponse<null>> {
     const { data } = await this.client.delete<ApiResponse<null>>(`/nozzles/${id}`);
+    return data;
+  }
+
+  // Shifts API
+  async getWorkers(): Promise<ApiResponse<Worker[]>> {
+    const { data } = await this.client.get<ApiResponse<Worker[]>>('/shifts/workers');
+    return data;
+  }
+
+  async getShifts(params?: {
+    fromDate?: string;
+    toDate?: string;
+    status?: ShiftStatus;
+    workerId?: string;
+  }): Promise<ApiResponse<Shift[]>> {
+    const { data } = await this.client.get<ApiResponse<Shift[]>>('/shifts', { params });
+    return data;
+  }
+
+  async getShift(id: string): Promise<ApiResponse<Shift>> {
+    const { data } = await this.client.get<ApiResponse<Shift>>(`/shifts/${id}`);
+    return data;
+  }
+
+  async getMyActiveShift(): Promise<ApiResponse<Shift | null>> {
+    const { data } = await this.client.get<ApiResponse<Shift | null>>('/shifts/my-active');
+    return data;
+  }
+
+  async startShift(dto: CreateShiftDto): Promise<ApiResponse<Shift>> {
+    const { data } = await this.client.post<ApiResponse<Shift>>('/shifts', dto);
+    return data;
+  }
+
+  async closeShift(id: string, dto: CloseShiftDto): Promise<ApiResponse<Shift>> {
+    const { data} = await this.client.put<ApiResponse<Shift>>(`/shifts/${id}/close`, dto);
+    return data;
+  }
+
+  // Fuel Sales API
+  async createFuelSale(dto: CreateFuelSaleDto): Promise<ApiResponse<FuelSale>> {
+    const { data } = await this.client.post<ApiResponse<FuelSale>>('/fuelsales', dto);
+    return data;
+  }
+
+  async getFuelSale(id: string): Promise<ApiResponse<FuelSale>> {
+    const { data } = await this.client.get<ApiResponse<FuelSale>>(`/fuelsales/${id}`);
+    return data;
+  }
+
+  async getFuelSalesByShift(shiftId: string): Promise<ApiResponse<FuelSale[]>> {
+    const { data } = await this.client.get<ApiResponse<FuelSale[]>>(`/fuelsales/shift/${shiftId}`);
+    return data;
+  }
+
+  async updateFuelSale(id: string, dto: CreateFuelSaleDto): Promise<ApiResponse<FuelSale>> {
+    const { data } = await this.client.put<ApiResponse<FuelSale>>(`/fuelsales/${id}`, dto);
+    return data;
+  }
+
+  async deleteFuelSale(id: string): Promise<ApiResponse<null>> {
+    const { data } = await this.client.delete<ApiResponse<null>>(`/fuelsales/${id}`);
     return data;
   }
 }
