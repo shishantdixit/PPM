@@ -41,6 +41,11 @@ export function FeatureProvider({ children }: { children: ReactNode }) {
         setFeatures(response.data.features);
       }
     } catch (err: any) {
+      // Ignore 401 errors - they occur during auth transitions
+      if (err.response?.status === 401) {
+        setLoading(false);
+        return;
+      }
       console.error('Error loading features:', err);
       setError(err.message || 'Failed to load features');
     } finally {
@@ -59,6 +64,10 @@ export function FeatureProvider({ children }: { children: ReactNode }) {
         setSubscription(response.data);
       }
     } catch (err: any) {
+      // Ignore 401 errors - they occur during auth transitions
+      if (err.response?.status === 401) {
+        return;
+      }
       console.error('Error loading subscription:', err);
     }
   }, [isAuthenticated, isSuperAdmin, user?.role]);

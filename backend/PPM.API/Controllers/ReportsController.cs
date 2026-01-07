@@ -14,6 +14,8 @@ namespace PPM.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
+[RequireTenant]
+[RequireFeature("REPORTS")]
 public class ReportsController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;

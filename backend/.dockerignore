@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.vs
+.vscode
+*.user
+*.suo
+
+# Build outputs
+**/bin
+**/obj
+**/out
+
+# Test results
+**/TestResults
+
+# Logs
+logs
+*.log
+
+# Documentation
+docs
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db

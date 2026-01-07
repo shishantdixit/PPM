@@ -15,6 +15,7 @@ namespace PPM.API.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 [RequireTenant]
+[RequireFeature("EXPENSES")]
 public class ExpensesController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;

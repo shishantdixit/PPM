@@ -15,6 +15,7 @@ namespace PPM.API.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 [RequireTenant]
+[RequireFeature("CREDIT_CUSTOMERS")]
 public class CreditCustomersController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;

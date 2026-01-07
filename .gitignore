@@ -22,3 +22,23 @@ nul
 bin/
 obj/
 *.dll
+
+# Environment files
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Docker volumes
+postgres_data/
+sqlserver_data/
+logs/
+
+# Nginx logs and SSL
+nginx/logs/*
+nginx/ssl/*
+!nginx/ssl/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
