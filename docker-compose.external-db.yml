@@ -9,23 +9,20 @@ services:
       dockerfile: Dockerfile
     container_name: ppm-backend
     restart: unless-stopped
+    network_mode: host
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: "http://+:5002"
+      ASPNETCORE_URLS: "http://+:5003"
       DatabaseProvider: "PostgreSQL"
-      ConnectionStrings__DefaultConnection: "Host=host.docker.internal;Port=5432;Database=${POSTGRES_DB:-PPM};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}"
+      ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=${POSTGRES_DB:-PPM};Username=${POSTGRES_USER:-ppm_user};Password=${POSTGRES_PASSWORD}"
       Jwt__Secret: ${JWT_SECRET:?JWT secret required}
       Jwt__Issuer: ${JWT_ISSUER:-PPM.API}
       Jwt__Audience: ${JWT_AUDIENCE:-PPM.Client}
       Jwt__ExpirationMinutes: ${JWT_EXPIRATION:-30}
-    ports:
-      - "5003:5002"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     volumes:
       - ./logs:/app/logs
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:5003/health"]
       interval: 30s
       timeout: 10s
       retries: 3
