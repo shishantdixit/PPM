@@ -43,7 +43,7 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5003/api}
     ports:
-      - "3001:3000"
+      - "3002:3000"
     depends_on:
       backend:
         condition: service_healthy
