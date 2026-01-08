@@ -1,0 +1,51 @@
+version: '3.8'
+
+# Use this compose file when PostgreSQL is already running on the host
+# Usage: docker compose -f docker-compose.external-db.yml up -d
+
+services:
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ppm-backend
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: "http://+:5002"
+      DatabaseProvider: "PostgreSQL"
+      ConnectionStrings__DefaultConnection: "Host=host.docker.internal;Port=5432;Database=${POSTGRES_DB:-PPM};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}"
+      Jwt__Secret: ${JWT_SECRET:?JWT secret required}
+      Jwt__Issuer: ${JWT_ISSUER:-PPM.API}
+      Jwt__Audience: ${JWT_AUDIENCE:-PPM.Client}
+      Jwt__ExpirationMinutes: ${JWT_EXPIRATION:-30}
+    ports:
+      - "5002:5002"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend (Next.js)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5002/api}
+    container_name: ppm-frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5002/api}
+    ports:
+      - "3001:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
