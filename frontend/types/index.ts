@@ -140,6 +140,7 @@ export interface Nozzle {
   fuelTypeId: string;
   fuelName: string;
   fuelCode: string;
+  fuelUnit: string;
   nozzleNumber: string;
   nozzleName: string | null;
   currentMeterReading: number;

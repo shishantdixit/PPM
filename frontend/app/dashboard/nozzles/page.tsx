@@ -84,7 +84,7 @@ export default function NozzlesPage() {
           fuelTypeId: formData.fuelTypeId,
           nozzleNumber: formData.nozzleNumber,
           nozzleName: formData.nozzleName || undefined,
-          currentMeterReading: formData.currentMeterReading ? parseFloat(formData.currentMeterReading) : undefined,
+          currentMeterReading: formData.currentMeterReading ? parseFloat(formData.currentMeterReading) : 0,
         };
         await api.createNozzle(dto);
       }
