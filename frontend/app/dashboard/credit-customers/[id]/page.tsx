@@ -7,10 +7,9 @@ import { api } from '@/lib/api';
 import type {
   CreditCustomer,
   CreditTransaction,
-  UpdateCreditCustomerDto,
-  PaymentModeCredit,
-  CreditTransactionType
+  UpdateCreditCustomerDto
 } from '@/types';
+import { PaymentModeCredit, CreditTransactionType } from '@/types';
 
 export default function CreditCustomerDetailPage() {
   const params = useParams();
