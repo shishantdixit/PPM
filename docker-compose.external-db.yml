@@ -1,5 +1,3 @@
-version: '3.8'
-
 # Use this compose file when PostgreSQL is already running on the host
 # Usage: docker compose -f docker-compose.external-db.yml up -d
 
@@ -21,7 +19,7 @@ services:
       Jwt__Audience: ${JWT_AUDIENCE:-PPM.Client}
       Jwt__ExpirationMinutes: ${JWT_EXPIRATION:-30}
     ports:
-      - "5002:5002"
+      - "5003:5002"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -39,11 +37,11 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5002/api}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5003/api}
     container_name: ppm-frontend
     restart: unless-stopped
     environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5002/api}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5003/api}
     ports:
       - "3001:3000"
     depends_on:
