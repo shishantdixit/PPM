@@ -516,7 +516,7 @@ function SubscriptionModal({
 }) {
   const [formData, setFormData] = useState<UpdateSubscriptionDto>({
     subscriptionPlan: tenant.subscriptionPlan,
-    subscriptionEndDate: tenant.subscriptionEndDate,
+    subscriptionEndDate: tenant.subscriptionEndDate ?? undefined,
     maxMachines: tenant.maxMachines,
     maxWorkers: tenant.maxWorkers,
     maxMonthlyBills: tenant.maxMonthlyBills,
