@@ -358,7 +358,7 @@ export default function TenantDetailPage() {
                           const newEnabled = e.target.checked;
                           try {
                             const response = await api.updateTenantFeatures(tenantId, [
-                              { featureCode: feature.featureCode, isEnabled: newEnabled }
+                              { featureId: feature.featureId, isEnabled: newEnabled }
                             ]);
                             if (response.success && response.data) {
                               setTenantFeatures(response.data);
