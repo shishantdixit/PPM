@@ -293,7 +293,7 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             FeatureId = new Guid("f0000001-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9870),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8044),
                             Description = "Access to sales reports, dashboards, and analytics",
                             DisplayOrder = 1,
                             FeatureCode = "REPORTS",
@@ -301,12 +301,12 @@ namespace PPM.Infrastructure.Migrations
                             Icon = "chart-bar",
                             IsActive = true,
                             Module = "Analytics",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9873)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8047)
                         },
                         new
                         {
                             FeatureId = new Guid("f0000002-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9886),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8055),
                             Description = "Manage credit customers and their balances",
                             DisplayOrder = 2,
                             FeatureCode = "CREDIT_CUSTOMERS",
@@ -314,12 +314,12 @@ namespace PPM.Infrastructure.Migrations
                             Icon = "credit-card",
                             IsActive = true,
                             Module = "Sales",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9888)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8055)
                         },
                         new
                         {
                             FeatureId = new Guid("f0000003-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9894),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8059),
                             Description = "Track and manage business expenses",
                             DisplayOrder = 3,
                             FeatureCode = "EXPENSES",
@@ -327,12 +327,12 @@ namespace PPM.Infrastructure.Migrations
                             Icon = "receipt",
                             IsActive = true,
                             Module = "Finance",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9895)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8060)
                         },
                         new
                         {
                             FeatureId = new Guid("f0000004-0000-0000-0000-000000000004"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9900),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8063),
                             Description = "Support for multiple shifts per day",
                             DisplayOrder = 4,
                             FeatureCode = "MULTI_SHIFT",
@@ -340,12 +340,12 @@ namespace PPM.Infrastructure.Migrations
                             Icon = "clock",
                             IsActive = true,
                             Module = "Operations",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9951)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8064)
                         },
                         new
                         {
                             FeatureId = new Guid("f0000005-0000-0000-0000-000000000005"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9957),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8067),
                             Description = "Export data to Excel and PDF",
                             DisplayOrder = 5,
                             FeatureCode = "EXPORT",
@@ -353,12 +353,12 @@ namespace PPM.Infrastructure.Migrations
                             Icon = "download",
                             IsActive = true,
                             Module = "Utilities",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9958)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8068)
                         },
                         new
                         {
                             FeatureId = new Guid("f0000006-0000-0000-0000-000000000006"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9963),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8071),
                             Description = "Programmatic API access for integrations",
                             DisplayOrder = 6,
                             FeatureCode = "API_ACCESS",
@@ -366,12 +366,12 @@ namespace PPM.Infrastructure.Migrations
                             Icon = "code",
                             IsActive = true,
                             Module = "Integration",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9964)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8072)
                         },
                         new
                         {
                             FeatureId = new Guid("f0000007-0000-0000-0000-000000000007"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9971),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8093),
                             Description = "Advanced analytics and custom reports",
                             DisplayOrder = 7,
                             FeatureCode = "ADVANCED_REPORTS",
@@ -379,12 +379,12 @@ namespace PPM.Infrastructure.Migrations
                             Icon = "chart-pie",
                             IsActive = true,
                             Module = "Analytics",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9972)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8094)
                         },
                         new
                         {
                             FeatureId = new Guid("f0000008-0000-0000-0000-000000000008"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9977),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8097),
                             Description = "Bulk import/export and batch operations",
                             DisplayOrder = 8,
                             FeatureCode = "BULK_OPERATIONS",
@@ -392,7 +392,7 @@ namespace PPM.Infrastructure.Migrations
                             Icon = "database",
                             IsActive = true,
                             Module = "Utilities",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 656, DateTimeKind.Utc).AddTicks(9978)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(8098)
                         });
                 });
 
@@ -442,34 +442,34 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             FuelRateId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2128),
-                            EffectiveFrom = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(9851),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(9307),
+                            EffectiveFrom = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(7926),
                             FuelTypeId = new Guid("77777777-7777-7777-7777-777777777777"),
                             Rate = 102.50m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2131),
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(9309),
                             UpdatedBy = new Guid("33333333-3333-3333-3333-333333333333")
                         },
                         new
                         {
                             FuelRateId = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2157),
-                            EffectiveFrom = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2154),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(9327),
+                            EffectiveFrom = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(9324),
                             FuelTypeId = new Guid("88888888-8888-8888-8888-888888888888"),
                             Rate = 89.75m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2158),
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(9328),
                             UpdatedBy = new Guid("33333333-3333-3333-3333-333333333333")
                         },
                         new
                         {
                             FuelRateId = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2163),
-                            EffectiveFrom = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2162),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(9334),
+                            EffectiveFrom = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(9333),
                             FuelTypeId = new Guid("99999999-9999-9999-9999-999999999999"),
                             Rate = 75.00m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(2163),
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(9335),
                             UpdatedBy = new Guid("33333333-3333-3333-3333-333333333333")
                         });
                 });
@@ -607,35 +607,35 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             FuelTypeId = new Guid("77777777-7777-7777-7777-777777777777"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(4558),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(1121),
                             FuelCode = "PTR",
                             FuelName = "Petrol",
                             IsActive = true,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Unit = "Liters",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(4563)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(1134)
                         },
                         new
                         {
                             FuelTypeId = new Guid("88888888-8888-8888-8888-888888888888"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(4676),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(1155),
                             FuelCode = "DSL",
                             FuelName = "Diesel",
                             IsActive = true,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Unit = "Liters",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(4677)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(1156)
                         },
                         new
                         {
                             FuelTypeId = new Guid("99999999-9999-9999-9999-999999999999"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(4935),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(1160),
                             FuelCode = "CNG",
                             FuelName = "CNG",
                             IsActive = true,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Unit = "Kg",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 651, DateTimeKind.Utc).AddTicks(4936)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 186, DateTimeKind.Utc).AddTicks(1161)
                         });
                 });
 
@@ -701,7 +701,7 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             MachineId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(9779),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 187, DateTimeKind.Utc).AddTicks(3848),
                             InstallationDate = new DateOnly(2023, 1, 15),
                             IsActive = true,
                             Location = "Left Side",
@@ -711,12 +711,12 @@ namespace PPM.Infrastructure.Migrations
                             Model = "Premier B",
                             SerialNumber = "SRL-M1-2023",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(9783)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 187, DateTimeKind.Utc).AddTicks(3849)
                         },
                         new
                         {
                             MachineId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(9802),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 187, DateTimeKind.Utc).AddTicks(3865),
                             InstallationDate = new DateOnly(2023, 3, 20),
                             IsActive = true,
                             Location = "Right Side",
@@ -726,7 +726,7 @@ namespace PPM.Infrastructure.Migrations
                             Model = "Helix 6000",
                             SerialNumber = "SRL-M2-2023",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 652, DateTimeKind.Utc).AddTicks(9803)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 187, DateTimeKind.Utc).AddTicks(3866)
                         });
                 });
 
@@ -783,7 +783,7 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             NozzleId = new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2811),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 187, DateTimeKind.Utc).AddTicks(6405),
                             CurrentMeterReading = 15234.567m,
                             FuelTypeId = new Guid("77777777-7777-7777-7777-777777777777"),
                             IsActive = true,
@@ -791,12 +791,12 @@ namespace PPM.Infrastructure.Migrations
                             NozzleName = "Petrol Nozzle 1",
                             NozzleNumber = "N1",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2814)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 187, DateTimeKind.Utc).AddTicks(6406)
                         },
                         new
                         {
                             NozzleId = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2824),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 187, DateTimeKind.Utc).AddTicks(6421),
                             CurrentMeterReading = 23456.789m,
                             FuelTypeId = new Guid("88888888-8888-8888-8888-888888888888"),
                             IsActive = true,
@@ -804,12 +804,12 @@ namespace PPM.Infrastructure.Migrations
                             NozzleName = "Diesel Nozzle 1",
                             NozzleNumber = "N2",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2825)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 187, DateTimeKind.Utc).AddTicks(6422)
                         },
                         new
                         {
                             NozzleId = new Guid("00000000-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2831),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 187, DateTimeKind.Utc).AddTicks(6428),
                             CurrentMeterReading = 18765.432m,
                             FuelTypeId = new Guid("77777777-7777-7777-7777-777777777777"),
                             IsActive = true,
@@ -817,12 +817,12 @@ namespace PPM.Infrastructure.Migrations
                             NozzleName = "Petrol Nozzle 2",
                             NozzleNumber = "N1",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2831)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 187, DateTimeKind.Utc).AddTicks(6428)
                         },
                         new
                         {
                             NozzleId = new Guid("00000000-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2837),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 187, DateTimeKind.Utc).AddTicks(6434),
                             CurrentMeterReading = 5678.123m,
                             FuelTypeId = new Guid("99999999-9999-9999-9999-999999999999"),
                             IsActive = true,
@@ -830,7 +830,7 @@ namespace PPM.Infrastructure.Migrations
                             NozzleName = "CNG Nozzle 1",
                             NozzleNumber = "N2",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 653, DateTimeKind.Utc).AddTicks(2837)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 187, DateTimeKind.Utc).AddTicks(6435)
                         });
                 });
 
@@ -870,218 +870,218 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             PlanFeatureId = new Guid("ba000001-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3801),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9827),
                             FeatureId = new Guid("f0000001-0000-0000-0000-000000000001"),
                             IsEnabled = false,
                             SubscriptionPlan = "Basic",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3804)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9828)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ba000002-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3818),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9834),
                             FeatureId = new Guid("f0000002-0000-0000-0000-000000000002"),
                             IsEnabled = false,
                             SubscriptionPlan = "Basic",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3819)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9835)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ba000003-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3844),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9848),
                             FeatureId = new Guid("f0000003-0000-0000-0000-000000000003"),
                             IsEnabled = false,
                             SubscriptionPlan = "Basic",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3845)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9849)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ba000004-0000-0000-0000-000000000004"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3853),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9853),
                             FeatureId = new Guid("f0000004-0000-0000-0000-000000000004"),
                             IsEnabled = false,
                             SubscriptionPlan = "Basic",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3854)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9853)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ba000005-0000-0000-0000-000000000005"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3889),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9862),
                             FeatureId = new Guid("f0000005-0000-0000-0000-000000000005"),
                             IsEnabled = false,
                             SubscriptionPlan = "Basic",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3890)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9863)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ba000006-0000-0000-0000-000000000006"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3895),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9867),
                             FeatureId = new Guid("f0000006-0000-0000-0000-000000000006"),
                             IsEnabled = false,
                             SubscriptionPlan = "Basic",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3896)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9867)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ba000007-0000-0000-0000-000000000007"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3901),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9871),
                             FeatureId = new Guid("f0000007-0000-0000-0000-000000000007"),
                             IsEnabled = false,
                             SubscriptionPlan = "Basic",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3902)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9872)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ba000008-0000-0000-0000-000000000008"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3907),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9875),
                             FeatureId = new Guid("f0000008-0000-0000-0000-000000000008"),
                             IsEnabled = false,
                             SubscriptionPlan = "Basic",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(3908)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 189, DateTimeKind.Utc).AddTicks(9875)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ca000001-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4477),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(67),
                             FeatureId = new Guid("f0000001-0000-0000-0000-000000000001"),
                             IsEnabled = true,
                             SubscriptionPlan = "Premium",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4479)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(68)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ca000002-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4486),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(71),
                             FeatureId = new Guid("f0000002-0000-0000-0000-000000000002"),
                             IsEnabled = true,
                             SubscriptionPlan = "Premium",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4487)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(72)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ca000003-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4492),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(76),
                             FeatureId = new Guid("f0000003-0000-0000-0000-000000000003"),
                             IsEnabled = true,
                             SubscriptionPlan = "Premium",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4493)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(76)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ca000004-0000-0000-0000-000000000004"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4499),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(80),
                             FeatureId = new Guid("f0000004-0000-0000-0000-000000000004"),
                             IsEnabled = true,
                             SubscriptionPlan = "Premium",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4500)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(80)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ca000005-0000-0000-0000-000000000005"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4505),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(84),
                             FeatureId = new Guid("f0000005-0000-0000-0000-000000000005"),
                             IsEnabled = true,
                             SubscriptionPlan = "Premium",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4506)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(85)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ca000006-0000-0000-0000-000000000006"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4511),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(88),
                             FeatureId = new Guid("f0000006-0000-0000-0000-000000000006"),
                             IsEnabled = false,
                             SubscriptionPlan = "Premium",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4512)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(89)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ca000007-0000-0000-0000-000000000007"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4518),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(92),
                             FeatureId = new Guid("f0000007-0000-0000-0000-000000000007"),
                             IsEnabled = false,
                             SubscriptionPlan = "Premium",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4519)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(93)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("ca000008-0000-0000-0000-000000000008"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4524),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(96),
                             FeatureId = new Guid("f0000008-0000-0000-0000-000000000008"),
                             IsEnabled = false,
                             SubscriptionPlan = "Premium",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4525)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(97)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("da000001-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4727),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(152),
                             FeatureId = new Guid("f0000001-0000-0000-0000-000000000001"),
                             IsEnabled = true,
                             SubscriptionPlan = "Enterprise",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4729)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(153)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("da000002-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4735),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(156),
                             FeatureId = new Guid("f0000002-0000-0000-0000-000000000002"),
                             IsEnabled = true,
                             SubscriptionPlan = "Enterprise",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4736)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(157)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("da000003-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4744),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(160),
                             FeatureId = new Guid("f0000003-0000-0000-0000-000000000003"),
                             IsEnabled = true,
                             SubscriptionPlan = "Enterprise",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4745)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(161)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("da000004-0000-0000-0000-000000000004"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4750),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(164),
                             FeatureId = new Guid("f0000004-0000-0000-0000-000000000004"),
                             IsEnabled = true,
                             SubscriptionPlan = "Enterprise",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4751)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(165)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("da000005-0000-0000-0000-000000000005"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4759),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(168),
                             FeatureId = new Guid("f0000005-0000-0000-0000-000000000005"),
                             IsEnabled = true,
                             SubscriptionPlan = "Enterprise",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4760)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(169)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("da000006-0000-0000-0000-000000000006"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4765),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(172),
                             FeatureId = new Guid("f0000006-0000-0000-0000-000000000006"),
                             IsEnabled = true,
                             SubscriptionPlan = "Enterprise",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4766)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(173)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("da000007-0000-0000-0000-000000000007"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4772),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(176),
                             FeatureId = new Guid("f0000007-0000-0000-0000-000000000007"),
                             IsEnabled = true,
                             SubscriptionPlan = "Enterprise",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4773)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(177)
                         },
                         new
                         {
                             PlanFeatureId = new Guid("da000008-0000-0000-0000-000000000008"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4777),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(180),
                             FeatureId = new Guid("f0000008-0000-0000-0000-000000000008"),
                             IsEnabled = true,
                             SubscriptionPlan = "Enterprise",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 657, DateTimeKind.Utc).AddTicks(4778)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 190, DateTimeKind.Utc).AddTicks(181)
                         });
                 });
 
@@ -1362,13 +1362,13 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             SystemUserId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 31, 620, DateTimeKind.Utc).AddTicks(6392),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 50, 586, DateTimeKind.Utc).AddTicks(5110),
                             Email = "admin@ppmapp.com",
                             FullName = "Super Administrator",
                             IsActive = true,
-                            PasswordHash = "$2a$11$1xPyPcZIPMjDwjstGcQpHuDeimgVnVpJeIXLnFs3GbLlLjttyOMoK",
+                            PasswordHash = "$2a$11$bV6OIM2Y8wUJST5L6yazSOQRjpUSFcjG/dvVDKiW76svIAbae033m",
                             Role = "SuperAdmin",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 31, 620, DateTimeKind.Utc).AddTicks(6669),
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 50, 586, DateTimeKind.Utc).AddTicks(5294),
                             Username = "superadmin"
                         });
                 });
@@ -1549,7 +1549,7 @@ namespace PPM.Infrastructure.Migrations
                             City = "Mumbai",
                             CompanyName = "Demo Petrol Pump",
                             Country = "India",
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 31, 622, DateTimeKind.Utc).AddTicks(6092),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 50, 587, DateTimeKind.Utc).AddTicks(8355),
                             Email = "demo@petroldemo.com",
                             IsActive = true,
                             MaxMachines = 5,
@@ -1559,12 +1559,12 @@ namespace PPM.Infrastructure.Migrations
                             Phone = "9876543210",
                             PinCode = "400001",
                             State = "Maharashtra",
-                            SubscriptionEndDate = new DateTime(2027, 1, 7, 16, 13, 31, 621, DateTimeKind.Utc).AddTicks(9671),
+                            SubscriptionEndDate = new DateTime(2027, 1, 9, 6, 10, 50, 587, DateTimeKind.Utc).AddTicks(5584),
                             SubscriptionPlan = "Premium",
-                            SubscriptionStartDate = new DateTime(2026, 1, 7, 16, 13, 31, 621, DateTimeKind.Utc).AddTicks(9462),
+                            SubscriptionStartDate = new DateTime(2026, 1, 9, 6, 10, 50, 587, DateTimeKind.Utc).AddTicks(5465),
                             SubscriptionStatus = "Active",
                             TenantCode = "DEMO001",
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 31, 622, DateTimeKind.Utc).AddTicks(6095)
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 50, 587, DateTimeKind.Utc).AddTicks(8357)
                         });
                 });
 
@@ -1689,66 +1689,66 @@ namespace PPM.Infrastructure.Migrations
                         new
                         {
                             UserId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 31, 879, DateTimeKind.Utc).AddTicks(4206),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 50, 770, DateTimeKind.Utc).AddTicks(7584),
                             Email = "owner@petroldemo.com",
                             FullName = "Rajesh Kumar",
                             IsActive = true,
-                            PasswordHash = "$2a$11$hfbtYoaIydrnVX6WJtozvuhQZSDeOdYTA9XbSKPuxlIFTcZ2ivcnq",
+                            PasswordHash = "$2a$11$jtnPnZLbP04J9085SWqQdurF2UA/7a9VCre34UUOg5bd5u3IlLavu",
                             Phone = "9876543210",
                             Role = "Owner",
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 31, 879, DateTimeKind.Utc).AddTicks(4217),
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 50, 770, DateTimeKind.Utc).AddTicks(7595),
                             Username = "owner"
                         },
                         new
                         {
                             UserId = new Guid("44444444-4444-4444-4444-444444444444"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 126, DateTimeKind.Utc).AddTicks(8096),
-                            DateOfJoining = new DateTime(2025, 7, 7, 16, 13, 32, 126, DateTimeKind.Utc).AddTicks(6955),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 50, 935, DateTimeKind.Utc).AddTicks(3278),
+                            DateOfJoining = new DateTime(2025, 7, 9, 6, 10, 50, 935, DateTimeKind.Utc).AddTicks(2213),
                             Email = "manager@petroldemo.com",
                             EmployeeCode = "MGR001",
                             FullName = "Suresh Patel",
                             IsActive = true,
-                            PasswordHash = "$2a$11$nqinP/zqa5JKQzg52WEn8uwpb2Oq67OPXLVgpXoax9HjblSdjTzau",
+                            PasswordHash = "$2a$11$lsXspL/8haOyyySgQ8.ZgeLRiVkswrG/V.JQQPuA.aneJVQvv8Kuu",
                             Phone = "9876543211",
                             Role = "Manager",
                             Salary = 30000m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 126, DateTimeKind.Utc).AddTicks(8103),
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 50, 935, DateTimeKind.Utc).AddTicks(3281),
                             Username = "manager"
                         },
                         new
                         {
                             UserId = new Guid("55555555-5555-5555-5555-555555555555"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 386, DateTimeKind.Utc).AddTicks(1581),
-                            DateOfJoining = new DateTime(2025, 10, 7, 16, 13, 32, 386, DateTimeKind.Utc).AddTicks(1532),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 61, DateTimeKind.Utc).AddTicks(3901),
+                            DateOfJoining = new DateTime(2025, 10, 9, 6, 10, 51, 61, DateTimeKind.Utc).AddTicks(3874),
                             Email = "ramesh@petroldemo.com",
                             EmployeeCode = "EMP001",
                             FullName = "Ramesh Kumar",
                             IsActive = true,
-                            PasswordHash = "$2a$11$TMSabOUR42sVEw6n8.pTTOmnrPk8u75RkgYpZqwq4KG3CNkxN/2Py",
+                            PasswordHash = "$2a$11$tvtbMwtMwyuhaAbGbRgzQunCS7h.y1CGu0uVUSz5rfsQfyrXHc9hO",
                             Phone = "9876543212",
                             Role = "Worker",
                             Salary = 15000m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 386, DateTimeKind.Utc).AddTicks(1585),
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 61, DateTimeKind.Utc).AddTicks(3904),
                             Username = "ramesh"
                         },
                         new
                         {
                             UserId = new Guid("66666666-6666-6666-6666-666666666666"),
-                            CreatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 650, DateTimeKind.Utc).AddTicks(4732),
-                            DateOfJoining = new DateTime(2025, 11, 7, 16, 13, 32, 650, DateTimeKind.Utc).AddTicks(4652),
+                            CreatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 185, DateTimeKind.Utc).AddTicks(911),
+                            DateOfJoining = new DateTime(2025, 11, 9, 6, 10, 51, 185, DateTimeKind.Utc).AddTicks(885),
                             Email = "dinesh@petroldemo.com",
                             EmployeeCode = "EMP002",
                             FullName = "Dinesh Sharma",
                             IsActive = true,
-                            PasswordHash = "$2a$11$VI0ZYIqMlofsW30v3AJNEuiDgGlc3bY6uSsSBLLvL8XR18662a3C2",
+                            PasswordHash = "$2a$11$48bo9mIxLIwW6cptXE7DYukH1Y4gbFczWk3SwvTM2ZvQzuL6fCeZK",
                             Phone = "9876543213",
                             Role = "Worker",
                             Salary = 15000m,
                             TenantId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2026, 1, 7, 16, 13, 32, 650, DateTimeKind.Utc).AddTicks(4738),
+                            UpdatedAt = new DateTime(2026, 1, 9, 6, 10, 51, 185, DateTimeKind.Utc).AddTicks(914),
                             Username = "dinesh"
                         });
                 });
