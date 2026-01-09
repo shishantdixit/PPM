@@ -76,6 +76,9 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// Add health checks
+builder.Services.AddHealthChecks();
+
 // Configure CORS
 builder.Services.AddCors(options =>
 {
@@ -147,6 +150,7 @@ app.UseMiddleware<TenantResolutionMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 // Auto-migrate database on startup
 using (var scope = app.Services.CreateScope())
