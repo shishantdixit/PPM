@@ -77,7 +77,6 @@ ScaffoldingReadMe.txt
 *.nuget.targets
 
 # Entity Framework Migrations
-**/Migrations/*.Designer.cs
 # Keep the migrations folder structure
 !**/Migrations/
 
