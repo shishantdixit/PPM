@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        // Server credentials - configure in Jenkins Credentials Manager
-        SERVER_HOST = credentials('ppm-server-host')      // Add as Secret text: 75.119.129.104
+        // Server configuration
+        SERVER_HOST = '75.119.129.104'
         SERVER_USER = 'root'
         DEPLOY_PATH = '/var/www/vhosts/loving-noether.75-119-129-104.plesk.page/httpdocs'
         GIT_REPO_PATH = '/var/www/vhosts/loving-noether.75-119-129-104.plesk.page/git/PPM.git'
@@ -13,7 +13,6 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
                 script {
                     env.GIT_COMMIT_SHORT = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                     env.GIT_COMMIT_MSG = sh(script: 'git log -1 --pretty=%B', returnStdout: true).trim()
@@ -149,8 +148,8 @@ pipeline {
         failure {
             echo "Deployment FAILED - Commit: ${env.GIT_COMMIT_SHORT}"
         }
-        always {
-            cleanWs()
+        cleanup {
+            deleteDir()
         }
     }
 }
