@@ -23,14 +23,12 @@ pipeline {
         }
 
         stage('Update Server Git') {
-            when {
-                branch 'main'
-            }
             steps {
                 sshagent(credentials: ['contabo-ssh-key']) {
                     sh """
                         ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_HOST} '
                             cd ${GIT_REPO_PATH}
+                            git config --global --add safe.directory ${GIT_REPO_PATH}
                             git fetch origin main
                             git update-ref refs/heads/main FETCH_HEAD
                             echo "Git repo updated to: \$(git log -1 --oneline)"
@@ -41,9 +39,6 @@ pipeline {
         }
 
         stage('Deploy Code') {
-            when {
-                branch 'main'
-            }
             steps {
                 sshagent(credentials: ['contabo-ssh-key']) {
                     sh """
@@ -67,9 +62,6 @@ pipeline {
         }
 
         stage('Build & Deploy Containers') {
-            when {
-                branch 'main'
-            }
             steps {
                 sshagent(credentials: ['contabo-ssh-key']) {
                     sh """
@@ -94,9 +86,6 @@ pipeline {
         }
 
         stage('Health Check') {
-            when {
-                branch 'main'
-            }
             steps {
                 sshagent(credentials: ['contabo-ssh-key']) {
                     sh """
@@ -125,9 +114,6 @@ pipeline {
         }
 
         stage('Cleanup') {
-            when {
-                branch 'main'
-            }
             steps {
                 sshagent(credentials: ['contabo-ssh-key']) {
                     sh """
