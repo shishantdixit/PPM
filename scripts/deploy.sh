@@ -21,27 +21,39 @@ else
     exit 1
 fi
 
+cd "$PROJECT_DIR"
+
+# Read version from VERSION file
+APP_VERSION=$(cat VERSION 2>/dev/null || echo "1.0.0")
+GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+
 echo "=========================================="
 echo "PPM Deployment - $ENVIRONMENT"
 echo "=========================================="
 echo "Project directory: $PROJECT_DIR"
 echo "Compose file: $COMPOSE_FILE"
+echo "Version: $APP_VERSION (commit: $GIT_COMMIT)"
 echo ""
-
-cd "$PROJECT_DIR"
 
 # Step 1: Pull latest code (if in git repo)
 if [ -d ".git" ]; then
     echo "Pulling latest code..."
     git pull origin main || true
+    # Update version info after pull
+    APP_VERSION=$(cat VERSION 2>/dev/null || echo "1.0.0")
+    GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 fi
+
+# Export version for docker-compose
+export APP_VERSION
+export GIT_COMMIT
 
 # Step 2: Stop existing containers
 echo "Stopping existing containers..."
 docker compose -f "$COMPOSE_FILE" down || true
 
 # Step 3: Build images
-echo "Building Docker images..."
+echo "Building Docker images with version $APP_VERSION..."
 docker compose -f "$COMPOSE_FILE" build --no-cache
 
 # Step 4: Start containers
@@ -83,6 +95,10 @@ echo ""
 echo "=========================================="
 echo "Deployment completed successfully!"
 echo "=========================================="
+echo "Version: $APP_VERSION (commit: $GIT_COMMIT)"
 docker ps --filter "name=ppm-"
 echo ""
 echo "Backend health: $(curl -sf $HEALTH_URL || echo 'FAILED')"
+echo ""
+echo "Version info:"
+curl -sf http://localhost:5003/api/version || echo "Version endpoint not available"

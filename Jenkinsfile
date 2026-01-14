@@ -68,14 +68,20 @@ pipeline {
                         ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_HOST} '
                             cd ${DEPLOY_PATH}
 
+                            # Read version from VERSION file
+                            APP_VERSION=\$(cat VERSION 2>/dev/null || echo "1.0.0")
+                            GIT_COMMIT=\$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+
+                            echo "=== Deploying version \${APP_VERSION} (commit: \${GIT_COMMIT}) ==="
+
                             echo "=== Stopping existing containers ==="
                             docker compose -f ${COMPOSE_FILE} down || true
 
                             echo "=== Building Docker images ==="
-                            docker compose -f ${COMPOSE_FILE} build --no-cache
+                            APP_VERSION=\${APP_VERSION} GIT_COMMIT=\${GIT_COMMIT} docker compose -f ${COMPOSE_FILE} build --no-cache
 
                             echo "=== Starting containers ==="
-                            docker compose -f ${COMPOSE_FILE} up -d
+                            APP_VERSION=\${APP_VERSION} GIT_COMMIT=\${GIT_COMMIT} docker compose -f ${COMPOSE_FILE} up -d
 
                             echo "=== Waiting for services ==="
                             sleep 40
@@ -97,6 +103,9 @@ pipeline {
                                 if curl -sf http://localhost:5003/health > /dev/null 2>&1; then
                                     echo "Health check PASSED"
                                     docker ps --filter "name=ppm-"
+                                    echo ""
+                                    echo "=== Deployed Version ==="
+                                    curl -sf http://localhost:5003/api/version || echo "Version endpoint not available"
                                     exit 0
                                 fi
                                 RETRY=\$((RETRY + 1))

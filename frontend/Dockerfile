@@ -17,7 +17,9 @@ RUN mkdir -p public
 
 # Set environment variables for build
 ARG NEXT_PUBLIC_API_URL=http://localhost:5000/api
+ARG NEXT_PUBLIC_APP_VERSION=1.0.0
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_APP_VERSION=$NEXT_PUBLIC_APP_VERSION
 
 # Build the application
 RUN npm run build

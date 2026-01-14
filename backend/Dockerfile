@@ -1,5 +1,10 @@
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+
+# Version arguments
+ARG APP_VERSION=1.0.0
+ARG GIT_COMMIT=unknown
+
 WORKDIR /src
 
 # Copy csproj files and restore dependencies
@@ -13,11 +18,15 @@ RUN dotnet restore "PPM.API/PPM.API.csproj"
 # Copy everything else and build
 COPY . .
 WORKDIR "/src/PPM.API"
-RUN dotnet build "PPM.API.csproj" -c Release -o /app/build
+RUN dotnet build "PPM.API.csproj" -c Release -o /app/build \
+    /p:APP_VERSION=${APP_VERSION} /p:GIT_COMMIT=${GIT_COMMIT}
 
 # Publish stage
 FROM build AS publish
-RUN dotnet publish "PPM.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+ARG APP_VERSION=1.0.0
+ARG GIT_COMMIT=unknown
+RUN dotnet publish "PPM.API.csproj" -c Release -o /app/publish /p:UseAppHost=false \
+    /p:APP_VERSION=${APP_VERSION} /p:GIT_COMMIT=${GIT_COMMIT}
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final

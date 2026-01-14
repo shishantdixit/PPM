@@ -7,6 +7,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-1.0.0}
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
     container_name: ppm-backend
     restart: unless-stopped
     network_mode: host
@@ -35,10 +38,12 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5003/api}
+        NEXT_PUBLIC_APP_VERSION: ${APP_VERSION:-1.0.0}
     container_name: ppm-frontend
     restart: unless-stopped
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5003/api}
+      NEXT_PUBLIC_APP_VERSION: ${APP_VERSION:-1.0.0}
     ports:
       - "3002:3000"
     depends_on:

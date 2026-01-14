@@ -195,7 +195,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </div>
           )}
 
-          <nav className="mt-3 lg:mt-5 px-2 space-y-1 pb-4">
+          <nav className="mt-3 lg:mt-5 px-2 space-y-1 pb-4 flex flex-col h-[calc(100%-120px)] lg:h-[calc(100%-60px)]">
+            <div className="flex-1">
             {navigation.map((item) => {
               const isFeatureLocked = item.featureCode && !hasFeature(item.featureCode);
 
@@ -243,6 +244,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 </Link>
               );
             })}
+            </div>
+
+            {/* Version info */}
+            <div className="mt-auto pt-4 border-t border-gray-200 px-3">
+              <p className="text-xs text-gray-400">
+                v{process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0'}
+              </p>
+            </div>
           </nav>
         </aside>
 
