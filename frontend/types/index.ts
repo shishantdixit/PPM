@@ -846,6 +846,11 @@ export interface TenantSubscription {
   maxWorkers: number;
   maxMonthlyBills: number;
   features: TenantFeature[];
+  // Trial info
+  isTrial?: boolean;
+  trialStartDate?: string | null;
+  trialEndDate?: string | null;
+  trialDaysRemaining?: number | null;
 }
 
 export interface FeatureAccess {

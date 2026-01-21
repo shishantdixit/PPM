@@ -47,6 +47,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<PPM.API.Services.IExportService, PPM.API.Services.ExportService>();
 builder.Services.AddScoped<IFeatureService, FeatureService>();
 builder.Services.AddScoped<ITankService, TankService>();
+builder.Services.AddScoped<ILicenseKeyService, LicenseKeyService>();
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
@@ -170,8 +171,9 @@ using (var scope = app.Services.CreateScope())
 
 Log.Information("Starting PPM API...");
 
-app.Run();
 
+
+app.Run();
 // Make Program class accessible for integration tests
 namespace PPM.API
 {

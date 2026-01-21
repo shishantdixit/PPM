@@ -134,11 +134,94 @@ public class AuthController : ControllerBase
             return Unauthorized(ApiResponse<LoginResponseDto>.ErrorResponse("Invalid tenant or credentials"));
         }
 
-        // Check subscription status
-        if (tenant.SubscriptionStatus != "Active")
+        // Check subscription/trial status
+        var now = DateTime.UtcNow;
+        TrialInfoDto? trialInfo = null;
+
+        if (tenant.IsTrial)
         {
-            _logger.LogWarning("Login attempt for suspended tenant {TenantCode}", request.TenantCode);
-            return Unauthorized(ApiResponse<LoginResponseDto>.ErrorResponse("Account suspended. Please contact support."));
+            // Check trial expiration
+            if (tenant.TrialEndDate.HasValue && tenant.TrialEndDate.Value < now)
+            {
+                // Trial has expired - update status
+                if (tenant.SubscriptionStatus != "Expired")
+                {
+                    tenant.SubscriptionStatus = "Expired";
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                _logger.LogWarning("Login attempt for expired trial tenant {TenantCode}", request.TenantCode);
+                return Unauthorized(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Your 7-day trial has expired. Please enter a license key to continue using PPM.",
+                    Data = new
+                    {
+                        errorCode = "TRIAL_EXPIRED",
+                        trialEndDate = tenant.TrialEndDate,
+                        tenantId = tenant.TenantId
+                    }
+                });
+            }
+
+            // Trial still active - calculate days remaining
+            var daysRemaining = tenant.TrialEndDate.HasValue
+                ? Math.Max(0, (int)(tenant.TrialEndDate.Value - now).TotalDays)
+                : 0;
+
+            trialInfo = new TrialInfoDto
+            {
+                IsTrial = true,
+                TrialEndDate = tenant.TrialEndDate,
+                DaysRemaining = daysRemaining,
+                SubscriptionStatus = "Trial"
+            };
+        }
+        else
+        {
+            // Regular subscription - check status
+            if (tenant.SubscriptionStatus == "Suspended")
+            {
+                _logger.LogWarning("Login attempt for suspended tenant {TenantCode}", request.TenantCode);
+                return Unauthorized(ApiResponse<LoginResponseDto>.ErrorResponse("Account suspended. Please contact support."));
+            }
+
+            if (tenant.SubscriptionStatus == "Expired" ||
+                (tenant.SubscriptionEndDate.HasValue && tenant.SubscriptionEndDate.Value < now))
+            {
+                // Update status if not already expired
+                if (tenant.SubscriptionStatus != "Expired")
+                {
+                    tenant.SubscriptionStatus = "Expired";
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                _logger.LogWarning("Login attempt for expired subscription tenant {TenantCode}", request.TenantCode);
+                return Unauthorized(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Your subscription has expired. Please enter a license key to renew.",
+                    Data = new
+                    {
+                        errorCode = "SUBSCRIPTION_EXPIRED",
+                        subscriptionEndDate = tenant.SubscriptionEndDate,
+                        tenantId = tenant.TenantId
+                    }
+                });
+            }
+
+            // Calculate days remaining for active subscription
+            if (tenant.SubscriptionEndDate.HasValue)
+            {
+                var daysRemaining = Math.Max(0, (int)(tenant.SubscriptionEndDate.Value - now).TotalDays);
+                trialInfo = new TrialInfoDto
+                {
+                    IsTrial = false,
+                    TrialEndDate = tenant.SubscriptionEndDate,
+                    DaysRemaining = daysRemaining,
+                    SubscriptionStatus = tenant.SubscriptionStatus
+                };
+            }
         }
 
         // Find user
@@ -196,11 +279,12 @@ public class AuthController : ControllerBase
                 TenantCode = tenant.TenantCode,
                 TenantName = tenant.CompanyName,
                 IsSuperAdmin = false
-            }
+            },
+            TrialInfo = trialInfo
         };
 
-        _logger.LogInformation("User {Username} from tenant {TenantCode} logged in successfully",
-            user.Username, tenant.TenantCode);
+        _logger.LogInformation("User {Username} from tenant {TenantCode} logged in successfully (Trial: {IsTrial})",
+            user.Username, tenant.TenantCode, tenant.IsTrial);
 
         return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(response, "Login successful"));
     }

@@ -9,6 +9,7 @@ public class LoginResponseDto
     public string RefreshToken { get; set; } = string.Empty;
     public int ExpiresIn { get; set; } // in seconds
     public UserInfoDto User { get; set; } = null!;
+    public TrialInfoDto? TrialInfo { get; set; }
 }
 
 /// <summary>
@@ -25,4 +26,15 @@ public class UserInfoDto
     public string? TenantCode { get; set; }
     public string? TenantName { get; set; }
     public bool IsSuperAdmin { get; set; }
+}
+
+/// <summary>
+/// Trial information for tenant users
+/// </summary>
+public class TrialInfoDto
+{
+    public bool IsTrial { get; set; }
+    public DateTime? TrialEndDate { get; set; }
+    public int DaysRemaining { get; set; }
+    public string SubscriptionStatus { get; set; } = string.Empty;
 }

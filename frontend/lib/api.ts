@@ -875,6 +875,222 @@ class ApiClient {
     const { data } = await this.client.get<ApiResponse<PagedResult<StockEntry>>>(`/stockentries/by-type/${entryType}?page=${page}&pageSize=${pageSize}`);
     return data;
   }
+
+  // ============ Registration API ============
+
+  async register(dto: {
+    companyName: string;
+    ownerName: string;
+    email: string;
+    phone: string;
+    tenantCode?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    pinCode?: string;
+    username: string;
+    password: string;
+  }): Promise<ApiResponse<{
+    tenantId: string;
+    tenantCode: string;
+    companyName: string;
+    username: string;
+    trialStartDate: string;
+    trialEndDate: string;
+    trialDaysRemaining: number;
+    message: string;
+  }>> {
+    const { data } = await this.client.post('/registration/register', dto);
+    return data;
+  }
+
+  async checkEmailAvailability(email: string): Promise<ApiResponse<{
+    isAvailable: boolean;
+    message?: string;
+  }>> {
+    const { data } = await this.client.get(`/registration/check-email/${encodeURIComponent(email)}`);
+    return data;
+  }
+
+  async checkTenantCodeAvailability(code: string): Promise<ApiResponse<{
+    isAvailable: boolean;
+    message?: string;
+    suggestedValue?: string;
+  }>> {
+    const { data } = await this.client.get(`/registration/check-tenant-code/${encodeURIComponent(code)}`);
+    return data;
+  }
+
+  async suggestTenantCode(companyName: string): Promise<ApiResponse<{ tenantCode: string }>> {
+    const { data } = await this.client.get(`/registration/suggest-tenant-code?companyName=${encodeURIComponent(companyName)}`);
+    return data;
+  }
+
+  // ============ Subscription API ============
+
+  async getSubscriptionStatus(): Promise<ApiResponse<{
+    tenantId: string;
+    tenantCode: string;
+    companyName: string;
+    isTrial: boolean;
+    trialStartDate: string | null;
+    trialEndDate: string | null;
+    trialDaysRemaining: number | null;
+    subscriptionPlan: string;
+    subscriptionStatus: string;
+    subscriptionStartDate: string | null;
+    subscriptionEndDate: string | null;
+    daysRemaining: number | null;
+    maxMachines: number;
+    maxWorkers: number;
+    maxMonthlyBills: number;
+    currentMachineCount: number;
+    currentWorkerCount: number;
+    currentMonthBillCount: number;
+    activeLicenseKeyId: string | null;
+    licenseActivatedAt: string | null;
+  }>> {
+    const { data } = await this.client.get('/subscription/status');
+    return data;
+  }
+
+  async activateLicenseKey(licenseKey: string): Promise<ApiResponse<{
+    success: boolean;
+    message: string;
+    newSubscriptionPlan?: string;
+    newSubscriptionEndDate?: string;
+    maxMachines?: number;
+    maxWorkers?: number;
+    maxMonthlyBills?: number;
+  }>> {
+    const { data } = await this.client.post('/subscription/activate', { licenseKey });
+    return data;
+  }
+
+  // ============ License Key Management API (Super Admin) ============
+
+  async generateLicenseKey(dto: {
+    subscriptionPlan: string;
+    durationMonths: number;
+    maxMachines?: number;
+    maxWorkers?: number;
+    maxMonthlyBills?: number;
+    notes?: string;
+  }): Promise<ApiResponse<{
+    licenseKeyId: string;
+    key: string;
+    subscriptionPlan: string;
+    durationMonths: number;
+    maxMachines: number;
+    maxWorkers: number;
+    maxMonthlyBills: number;
+    status: string;
+    notes?: string;
+    createdAt: string;
+  }>> {
+    const { data } = await this.client.post('/superadmin/license-keys', dto);
+    return data;
+  }
+
+  async generateBatchLicenseKeys(dto: {
+    count: number;
+    subscriptionPlan: string;
+    durationMonths: number;
+    maxMachines?: number;
+    maxWorkers?: number;
+    maxMonthlyBills?: number;
+    notes?: string;
+  }): Promise<ApiResponse<Array<{
+    licenseKeyId: string;
+    key: string;
+    subscriptionPlan: string;
+    durationMonths: number;
+    maxMachines: number;
+    maxWorkers: number;
+    maxMonthlyBills: number;
+    status: string;
+    notes?: string;
+    createdAt: string;
+  }>>> {
+    const { data } = await this.client.post('/superadmin/license-keys/batch', dto);
+    return data;
+  }
+
+  async getLicenseKeys(params?: {
+    status?: string;
+    subscriptionPlan?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<ApiResponse<{
+    keys: Array<{
+      licenseKeyId: string;
+      key: string;
+      subscriptionPlan: string;
+      durationMonths: number;
+      maxMachines: number;
+      maxWorkers: number;
+      maxMonthlyBills: number;
+      status: string;
+      activatedByTenantId?: string;
+      activatedByTenantCode?: string;
+      activatedByCompanyName?: string;
+      activatedAt?: string;
+      generatedByUsername: string;
+      notes?: string;
+      createdAt: string;
+    }>;
+    totalCount: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }>> {
+    const searchParams = new URLSearchParams();
+    if (params?.status) searchParams.append('status', params.status);
+    if (params?.subscriptionPlan) searchParams.append('subscriptionPlan', params.subscriptionPlan);
+    if (params?.search) searchParams.append('search', params.search);
+    if (params?.page) searchParams.append('page', params.page.toString());
+    if (params?.limit) searchParams.append('limit', params.limit.toString());
+    const { data } = await this.client.get(`/superadmin/license-keys?${searchParams.toString()}`);
+    return data;
+  }
+
+  async getLicenseKey(id: string): Promise<ApiResponse<{
+    licenseKeyId: string;
+    key: string;
+    subscriptionPlan: string;
+    durationMonths: number;
+    maxMachines: number;
+    maxWorkers: number;
+    maxMonthlyBills: number;
+    status: string;
+    activatedByTenantId?: string;
+    activatedByTenantCode?: string;
+    activatedByCompanyName?: string;
+    activatedAt?: string;
+    generatedByUsername: string;
+    notes?: string;
+    createdAt: string;
+  }>> {
+    const { data } = await this.client.get(`/superadmin/license-keys/${id}`);
+    return data;
+  }
+
+  async revokeLicenseKey(id: string, reason?: string): Promise<ApiResponse<null>> {
+    const { data } = await this.client.patch(`/superadmin/license-keys/${id}/revoke`, { reason });
+    return data;
+  }
+
+  async getLicenseKeyStats(): Promise<ApiResponse<{
+    totalKeys: number;
+    availableKeys: number;
+    usedKeys: number;
+    revokedKeys: number;
+    keysByPlan: Array<{ plan: string; count: number }>;
+  }>> {
+    const { data } = await this.client.get('/superadmin/license-keys/stats');
+    return data;
+  }
 }
 
 export const api = new ApiClient();

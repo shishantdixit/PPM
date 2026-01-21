@@ -36,6 +36,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<PlanFeature> PlanFeatures { get; set; }
     public DbSet<TenantFeature> TenantFeatures { get; set; }
 
+    // License management
+    public DbSet<LicenseKey> LicenseKeys { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         // Suppress the pending model changes warning (known EF Core 9 issue)
@@ -66,6 +69,7 @@ public class ApplicationDbContext : DbContext
         ConfigureFeatures(modelBuilder);
         ConfigurePlanFeatures(modelBuilder);
         ConfigureTenantFeatures(modelBuilder);
+        ConfigureLicenseKeys(modelBuilder);
 
         // Seed data
         SeedData(modelBuilder);
@@ -477,6 +481,7 @@ public class ApplicationDbContext : DbContext
             SubscriptionStatus = "Active",
             SubscriptionStartDate = DateTime.UtcNow,
             SubscriptionEndDate = DateTime.UtcNow.AddYears(1),
+            IsTrial = false, // Demo tenant is not on trial
             MaxMachines = 5,
             MaxWorkers = 20,
             MaxMonthlyBills = 10000,
@@ -1029,5 +1034,32 @@ public class ApplicationDbContext : DbContext
             new PlanFeature { PlanFeatureId = Guid.Parse("da000007-0000-0000-0000-000000000007"), SubscriptionPlan = "Enterprise", FeatureId = advancedReportsId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
             new PlanFeature { PlanFeatureId = Guid.Parse("da000008-0000-0000-0000-000000000008"), SubscriptionPlan = "Enterprise", FeatureId = bulkOperationsId, IsEnabled = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
         );
+    }
+
+    private void ConfigureLicenseKeys(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<LicenseKey>(entity =>
+        {
+            entity.HasKey(e => e.LicenseKeyId);
+            entity.Property(e => e.Key).IsRequired().HasMaxLength(30);
+            entity.Property(e => e.SubscriptionPlan).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.Status).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.Notes).HasMaxLength(500);
+
+            entity.HasIndex(e => e.Key).IsUnique();
+            entity.HasIndex(e => e.Status);
+            entity.HasIndex(e => e.GeneratedBySystemUserId);
+            entity.HasIndex(e => e.ActivatedByTenantId);
+
+            entity.HasOne(e => e.GeneratedBySystemUser)
+                .WithMany()
+                .HasForeignKey(e => e.GeneratedBySystemUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.ActivatedByTenant)
+                .WithMany()
+                .HasForeignKey(e => e.ActivatedByTenantId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
     }
 }

@@ -21,9 +21,18 @@ public class Tenant : BaseEntity
 
     // Subscription
     public string SubscriptionPlan { get; set; } = "Basic"; // Basic, Premium, Enterprise
-    public string SubscriptionStatus { get; set; } = "Active"; // Active, Suspended, Expired
+    public string SubscriptionStatus { get; set; } = "Active"; // Active, Suspended, Expired, Trial
     public DateTime SubscriptionStartDate { get; set; }
     public DateTime? SubscriptionEndDate { get; set; }
+
+    // Trial
+    public bool IsTrial { get; set; } = true;
+    public DateTime? TrialStartDate { get; set; }
+    public DateTime? TrialEndDate { get; set; }
+
+    // License
+    public Guid? ActiveLicenseKeyId { get; set; }
+    public DateTime? LicenseActivatedAt { get; set; }
 
     // Limits
     public int MaxMachines { get; set; } = 5;

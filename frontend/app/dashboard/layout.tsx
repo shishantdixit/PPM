@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { ReactNode, useEffect, useState } from 'react';
 import { UpgradeModal } from '@/components/UpgradeModal';
+import TrialBanner from '@/components/TrialBanner';
 
 interface NavItem {
   name: string;
@@ -90,6 +91,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Trial Banner - shows at the very top */}
+      <TrialBanner />
+
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div

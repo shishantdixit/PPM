@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -9,11 +10,13 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [tenantCode, setTenantCode] = useState('');
   const [error, setError] = useState('');
+  const [errorCode, setErrorCode] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
+    setErrorCode('');
     setLoading(true);
 
     try {
@@ -23,6 +26,8 @@ export default function LoginPage() {
         tenantCode: tenantCode || undefined,
       });
     } catch (err: any) {
+      const code = err.response?.data?.data?.errorCode || '';
+      setErrorCode(code);
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
@@ -96,6 +101,11 @@ export default function LoginPage() {
               <div className="flex">
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-red-800">{error}</h3>
+                  {(errorCode === 'TRIAL_EXPIRED' || errorCode === 'SUBSCRIPTION_EXPIRED') && (
+                    <p className="mt-2 text-sm text-red-600">
+                      Please contact your administrator or activate a license key to continue.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -111,6 +121,15 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-600">
+            Don't have an account?{' '}
+            <Link href="/auth/register" className="text-blue-600 hover:text-blue-700 font-medium">
+              Start Free Trial
+            </Link>
+          </p>
+        </div>
 
         <div className="mt-6 text-center text-xs text-gray-500">
           <p className="font-semibold mb-2">Demo Credentials:</p>

@@ -116,3 +116,9 @@ export function useFeatures() {
   }
   return context;
 }
+
+// Convenience hook for subscription/trial info
+export function useSubscription() {
+  const { subscription, loading, refreshFeatures } = useFeatures();
+  return { subscription, loading, refreshSubscription: refreshFeatures };
+}

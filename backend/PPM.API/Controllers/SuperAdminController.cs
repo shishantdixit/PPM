@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PPM.API.Attributes;
+using PPM.API.Middleware;
 using PPM.Application.Common;
 using PPM.Application.DTOs.Admin;
+using PPM.Application.DTOs.License;
+using PPM.Application.Interfaces;
 using PPM.Infrastructure.Data;
 
 namespace PPM.API.Controllers;
@@ -15,11 +18,16 @@ namespace PPM.API.Controllers;
 public class SuperAdminController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;
+    private readonly ILicenseKeyService _licenseKeyService;
     private readonly ILogger<SuperAdminController> _logger;
 
-    public SuperAdminController(ApplicationDbContext dbContext, ILogger<SuperAdminController> logger)
+    public SuperAdminController(
+        ApplicationDbContext dbContext,
+        ILicenseKeyService licenseKeyService,
+        ILogger<SuperAdminController> logger)
     {
         _dbContext = dbContext;
+        _licenseKeyService = licenseKeyService;
         _logger = logger;
     }
 
@@ -250,4 +258,240 @@ public class SuperAdminController : ControllerBase
             return StatusCode(500, ApiResponse<object>.ErrorResponse("Failed to fetch recent activity"));
         }
     }
+
+    #region License Key Management
+
+    /// <summary>
+    /// Generate a new license key
+    /// </summary>
+    [HttpPost("license-keys")]
+    public async Task<IActionResult> GenerateLicenseKey([FromBody] GenerateLicenseKeyDto dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+            return BadRequest(ApiResponse<object>.ErrorResponse($"Validation failed: {string.Join(", ", errors)}"));
+        }
+
+        try
+        {
+            var userId = HttpContext.GetUserId();
+            if (userId == Guid.Empty)
+            {
+                return Unauthorized(ApiResponse<object>.ErrorResponse("User context not found"));
+            }
+
+            var licenseKey = await _licenseKeyService.CreateLicenseKeyAsync(dto, userId);
+
+            var response = new LicenseKeyDto
+            {
+                LicenseKeyId = licenseKey.LicenseKeyId,
+                Key = licenseKey.Key,
+                SubscriptionPlan = licenseKey.SubscriptionPlan,
+                DurationMonths = licenseKey.DurationMonths,
+                MaxMachines = licenseKey.MaxMachines,
+                MaxWorkers = licenseKey.MaxWorkers,
+                MaxMonthlyBills = licenseKey.MaxMonthlyBills,
+                Status = licenseKey.Status,
+                Notes = licenseKey.Notes,
+                CreatedAt = licenseKey.CreatedAt
+            };
+
+            _logger.LogInformation("License key generated: {Key} for plan {Plan} by user {UserId}",
+                licenseKey.Key, dto.SubscriptionPlan, userId);
+
+            return Ok(ApiResponse<LicenseKeyDto>.SuccessResponse(response, "License key generated successfully"));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error generating license key");
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("Failed to generate license key"));
+        }
+    }
+
+    /// <summary>
+    /// Generate multiple license keys at once
+    /// </summary>
+    [HttpPost("license-keys/batch")]
+    public async Task<IActionResult> GenerateBatchLicenseKeys([FromBody] BatchGenerateLicenseKeyDto dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+            return BadRequest(ApiResponse<object>.ErrorResponse($"Validation failed: {string.Join(", ", errors)}"));
+        }
+
+        try
+        {
+            var userId = HttpContext.GetUserId();
+            if (userId == Guid.Empty)
+            {
+                return Unauthorized(ApiResponse<object>.ErrorResponse("User context not found"));
+            }
+
+            var licenseKeys = await _licenseKeyService.CreateBatchLicenseKeysAsync(dto, userId);
+
+            var response = licenseKeys.Select(lk => new LicenseKeyDto
+            {
+                LicenseKeyId = lk.LicenseKeyId,
+                Key = lk.Key,
+                SubscriptionPlan = lk.SubscriptionPlan,
+                DurationMonths = lk.DurationMonths,
+                MaxMachines = lk.MaxMachines,
+                MaxWorkers = lk.MaxWorkers,
+                MaxMonthlyBills = lk.MaxMonthlyBills,
+                Status = lk.Status,
+                Notes = lk.Notes,
+                CreatedAt = lk.CreatedAt
+            }).ToList();
+
+            _logger.LogInformation("Batch generated {Count} license keys for plan {Plan} by user {UserId}",
+                dto.Count, dto.SubscriptionPlan, userId);
+
+            return Ok(ApiResponse<List<LicenseKeyDto>>.SuccessResponse(response,
+                $"{dto.Count} license keys generated successfully"));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error generating batch license keys");
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("Failed to generate license keys"));
+        }
+    }
+
+    /// <summary>
+    /// Get all license keys with filtering
+    /// </summary>
+    [HttpGet("license-keys")]
+    public async Task<IActionResult> GetLicenseKeys([FromQuery] LicenseKeyQueryDto query)
+    {
+        try
+        {
+            var (keys, totalCount) = await _licenseKeyService.GetLicenseKeysAsync(query);
+
+            var response = new
+            {
+                Keys = keys,
+                TotalCount = totalCount,
+                Page = query.Page,
+                Limit = query.Limit,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)query.Limit)
+            };
+
+            return Ok(ApiResponse<object>.SuccessResponse(response));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching license keys");
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("Failed to fetch license keys"));
+        }
+    }
+
+    /// <summary>
+    /// Get a specific license key by ID
+    /// </summary>
+    [HttpGet("license-keys/{id}")]
+    public async Task<IActionResult> GetLicenseKey(Guid id)
+    {
+        try
+        {
+            var licenseKey = await _licenseKeyService.GetByIdAsync(id);
+
+            if (licenseKey == null)
+            {
+                return NotFound(ApiResponse<object>.ErrorResponse("License key not found"));
+            }
+
+            var response = new LicenseKeyDto
+            {
+                LicenseKeyId = licenseKey.LicenseKeyId,
+                Key = licenseKey.Key,
+                SubscriptionPlan = licenseKey.SubscriptionPlan,
+                DurationMonths = licenseKey.DurationMonths,
+                MaxMachines = licenseKey.MaxMachines,
+                MaxWorkers = licenseKey.MaxWorkers,
+                MaxMonthlyBills = licenseKey.MaxMonthlyBills,
+                Status = licenseKey.Status,
+                ActivatedByTenantId = licenseKey.ActivatedByTenantId,
+                ActivatedByTenantCode = licenseKey.ActivatedByTenant?.TenantCode,
+                ActivatedByCompanyName = licenseKey.ActivatedByTenant?.CompanyName,
+                ActivatedAt = licenseKey.ActivatedAt,
+                GeneratedByUsername = licenseKey.GeneratedBySystemUser.Username,
+                Notes = licenseKey.Notes,
+                CreatedAt = licenseKey.CreatedAt
+            };
+
+            return Ok(ApiResponse<LicenseKeyDto>.SuccessResponse(response));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching license key {LicenseKeyId}", id);
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("Failed to fetch license key"));
+        }
+    }
+
+    /// <summary>
+    /// Revoke an unused license key
+    /// </summary>
+    [HttpPatch("license-keys/{id}/revoke")]
+    public async Task<IActionResult> RevokeLicenseKey(Guid id, [FromBody] RevokeLicenseKeyDto dto)
+    {
+        try
+        {
+            var result = await _licenseKeyService.RevokeKeyAsync(id, dto.Reason);
+
+            if (!result)
+            {
+                return BadRequest(ApiResponse<object>.ErrorResponse(
+                    "Cannot revoke this license key. It may not exist or has already been used."));
+            }
+
+            _logger.LogInformation("License key {LicenseKeyId} revoked. Reason: {Reason}",
+                id, dto.Reason ?? "Not specified");
+
+            return Ok(ApiResponse<object>.SuccessResponse(null, "License key revoked successfully"));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error revoking license key {LicenseKeyId}", id);
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("Failed to revoke license key"));
+        }
+    }
+
+    /// <summary>
+    /// Get license key statistics
+    /// </summary>
+    [HttpGet("license-keys/stats")]
+    public async Task<IActionResult> GetLicenseKeyStats()
+    {
+        try
+        {
+            var stats = new
+            {
+                TotalKeys = await _dbContext.LicenseKeys.CountAsync(),
+                AvailableKeys = await _dbContext.LicenseKeys.CountAsync(lk => lk.Status == "Available"),
+                UsedKeys = await _dbContext.LicenseKeys.CountAsync(lk => lk.Status == "Used"),
+                RevokedKeys = await _dbContext.LicenseKeys.CountAsync(lk => lk.Status == "Revoked"),
+                KeysByPlan = await _dbContext.LicenseKeys
+                    .Where(lk => lk.Status == "Available")
+                    .GroupBy(lk => lk.SubscriptionPlan)
+                    .Select(g => new { Plan = g.Key, Count = g.Count() })
+                    .ToListAsync()
+            };
+
+            return Ok(ApiResponse<object>.SuccessResponse(stats));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching license key stats");
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("Failed to fetch license key statistics"));
+        }
+    }
+
+    #endregion
 }
